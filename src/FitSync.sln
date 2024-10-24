@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.Infrastructure", "FitSync.Infrastructure\FitSync.Infrastructure.csproj", "{66B6837C-05BA-4CE1-B85A-7758AC82400B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.Domain", "FitSync.Domain\FitSync.Domain.csproj", "{3AA2D1EE-3A3F-460A-83C1-13CF80B7488B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.Application", "FitSync.Application\FitSync.Application.csproj", "{7E8508B1-4799-44DC-A9A4-22F8C11241E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.API", "FitSync.API\FitSync.API.csproj", "{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66B6837C-05BA-4CE1-B85A-7758AC82400B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66B6837C-05BA-4CE1-B85A-7758AC82400B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66B6837C-05BA-4CE1-B85A-7758AC82400B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66B6837C-05BA-4CE1-B85A-7758AC82400B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AA2D1EE-3A3F-460A-83C1-13CF80B7488B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AA2D1EE-3A3F-460A-83C1-13CF80B7488B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AA2D1EE-3A3F-460A-83C1-13CF80B7488B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AA2D1EE-3A3F-460A-83C1-13CF80B7488B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8508B1-4799-44DC-A9A4-22F8C11241E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8508B1-4799-44DC-A9A4-22F8C11241E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8508B1-4799-44DC-A9A4-22F8C11241E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8508B1-4799-44DC-A9A4-22F8C11241E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
