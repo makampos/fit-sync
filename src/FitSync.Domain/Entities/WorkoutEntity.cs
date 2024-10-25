@@ -10,4 +10,6 @@ public class WorkoutEntity : TrackableEntity
     public string BodyPart { get; set; }
     public string Equipment { get; set; }
     public WorkoutLevel WorkoutLevel { get; set; }
+
+    public virtual ICollection<WorkoutPlanWorkoutEntity> WorkoutPlans { get; set; }
 }
