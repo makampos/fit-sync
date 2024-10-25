@@ -139,30 +139,4 @@ public static class WorkoutMapper
             workoutEntity.WorkoutLevel
         );
     }
-
-    // public static UserViewModel ToViewModel(this UserEntity userEntity)
-    // {
-    //     return new UserViewModel(
-    //         userEntity.Name,
-    //         userEntity.Age,
-    //         userEntity.Genre,
-    //         userEntity.WorkoutPlans.Select(wp => wp.ToViewModel()).ToList()
-    //     );
-    // }
-
-    // public static WorkoutPlanViewModel ToViewModel(this WorkoutPlanEntity workoutPlanEntity)
-    // {
-    //     return new WorkoutPlanViewModel(
-    //         workoutPlanEntity.Id,
-    //         workoutPlanEntity.Name,
-    //         workoutPlanEntity.Workouts.Select(w => w.ToViewModel()).ToList()
-    //     );
-    // }
-
-    // public static WorkoutPlanWorkoutViewModel ToViewModel(this WorkoutPlanWorkoutEntity workoutPlanWorkoutEntity)
-    // {
-    //     return new WorkoutPlanWorkoutViewModel(
-    //         workoutPlanWorkoutEntity.WorkoutPlanId,
-    //         workoutPlanWorkoutEntity.WorkoutId);
-    // }
 }
