@@ -2,6 +2,7 @@ using FitSync.Application.Mappers;
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
+using FitSync.Domain.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace FitSync.Application.Services;
@@ -42,6 +43,30 @@ public class UserService : IUserService
         }
 
         return ServiceResponse<UserDto>.SuccessResult(userEntity.ToDto());
+    }
+
+    public async Task<ServiceResponse<UserViewModel>> GetUserByIdIncludeAllAsync(int id)
+    {
+        _logger.LogInformation("Getting user by id: {Id} including all related data", id);
+
+        var userEntity = await _fitSyncUnitOfWork.UserRepository.GetUserByIdIncludeAllAsync(id);
+
+        if (userEntity is null)
+        {
+            _logger.LogWarning("User not found with id: {Id}", id);
+            return ServiceResponse<UserViewModel>.FailureResult("User not found");
+        }
+
+        //TODO: Refactor this logic to user Builder Pattern
+        var workoutPlans = userEntity.WorkoutPlans
+            .Select(wp => new WorkoutPlanViewModel(wp.Id, wp.Name, wp.Workouts
+                .Select(w => w.Workout.ToViewModel())
+                .ToList()))
+            .ToList();
+
+        var userViewModel = new UserViewModel(userEntity.Name, userEntity.Age, userEntity.Genre, workoutPlans);
+
+        return ServiceResponse<UserViewModel>.SuccessResult(userViewModel);
     }
 
     //TODO: Implement other methods

@@ -18,6 +18,20 @@ public class WorkoutPlanController : ControllerBase
         _workoutPlanService = workoutPlanService;
     }
 
+    [HttpGet("user/{userId}")]
+    [SwaggerOperation("Get Workout Plan by User Id")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanDto))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    public async Task<IActionResult> GetWorkoutPlanByUserIdAsync([FromRoute] int userId)
+    {
+        _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
+        var serviceResponse = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userId);
+
+        return serviceResponse.Success
+            ? Ok(serviceResponse.Data)
+            : NotFound();
+    }
+
     [HttpGet("{id}", Name = nameof(GetWorkoutPlanByIdAsync))]
     [SwaggerOperation("Get Workout Plan by Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanDto))]
@@ -25,7 +39,7 @@ public class WorkoutPlanController : ControllerBase
     public async Task<IActionResult> GetWorkoutPlanByIdAsync(int id)
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
-        var serviceResponse = await _workoutPlanService.GetWorkPlanByIdAsync(id);
+        var serviceResponse = await _workoutPlanService.GetWorkoutPlansByIdAsync(id);
 
         return serviceResponse.Success
             ? Ok(serviceResponse.Data)

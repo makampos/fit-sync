@@ -31,6 +31,19 @@ public class UserController : ControllerBase
             : NotFound(serviceResponse.ErrorMessage);
     }
 
+    [HttpGet("{id}/include-all", Name = nameof(GetUserByIdIncludeAllAsync))]
+    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserDto))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
+    public async Task<IActionResult> GetUserByIdIncludeAllAsync(int id)
+    {
+        _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(GetUserByIdIncludeAllAsync));
+        var serviceResponse = await _userService.GetUserByIdIncludeAllAsync(id);
+
+        return serviceResponse.Success
+            ? Ok(serviceResponse.Data)
+            : NotFound(serviceResponse.ErrorMessage);
+    }
+
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status201Created, "User created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "User data is invalid")]

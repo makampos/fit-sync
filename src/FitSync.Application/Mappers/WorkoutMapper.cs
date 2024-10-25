@@ -1,6 +1,7 @@
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Entities;
 using FitSync.Domain.Enums;
+using FitSync.Domain.ViewModels;
 
 namespace FitSync.Application.Mappers;
 
@@ -125,4 +126,43 @@ public static class WorkoutMapper
             workoutPlanWorkoutEntity.WorkoutId
         );
     }
+
+    public static WorkoutViewModel ToViewModel(this WorkoutEntity workoutEntity)
+    {
+        return new WorkoutViewModel(
+            workoutEntity.Id,
+            workoutEntity.Title,
+            workoutEntity.Description,
+            workoutEntity.Type,
+            workoutEntity.BodyPart,
+            workoutEntity.Equipment,
+            workoutEntity.WorkoutLevel
+        );
+    }
+
+    // public static UserViewModel ToViewModel(this UserEntity userEntity)
+    // {
+    //     return new UserViewModel(
+    //         userEntity.Name,
+    //         userEntity.Age,
+    //         userEntity.Genre,
+    //         userEntity.WorkoutPlans.Select(wp => wp.ToViewModel()).ToList()
+    //     );
+    // }
+
+    // public static WorkoutPlanViewModel ToViewModel(this WorkoutPlanEntity workoutPlanEntity)
+    // {
+    //     return new WorkoutPlanViewModel(
+    //         workoutPlanEntity.Id,
+    //         workoutPlanEntity.Name,
+    //         workoutPlanEntity.Workouts.Select(w => w.ToViewModel()).ToList()
+    //     );
+    // }
+
+    // public static WorkoutPlanWorkoutViewModel ToViewModel(this WorkoutPlanWorkoutEntity workoutPlanWorkoutEntity)
+    // {
+    //     return new WorkoutPlanWorkoutViewModel(
+    //         workoutPlanWorkoutEntity.WorkoutPlanId,
+    //         workoutPlanWorkoutEntity.WorkoutId);
+    // }
 }
