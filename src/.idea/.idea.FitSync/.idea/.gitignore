@@ -11,3 +11,13 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+/src/.idea/.idea.FitSync/.idea/dataSources.xml
+/.idea/.idea.fit-sync.dir/.idea/encodings.xml
+/src/.idea/.idea.FitSync/.idea/encodings.xml
+/.idea/.idea.fit-sync.dir/.idea/indexLayout.xml
+/src/.idea/.idea.FitSync/.idea/indexLayout.xml
+/.idea/.idea.fit-sync.dir/.idea/projectSettingsUpdater.xml
+/.idea/.idea.fit-sync.dir/.idea/vcs.xml
+/src/.idea/.idea.FitSync/.idea/vcs.xml
+/.idea/.idea.fit-sync.dir/.idea/workspace.xml

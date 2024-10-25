@@ -1,6 +1,6 @@
 namespace FitSync.Domain.Entities;
 
-public class Workout
+public class WorkoutCSV
 {
     public string Title { get; set; }
     public string Description { get; set; }
@@ -11,9 +11,8 @@ public class Workout
     public decimal Rating { get; set; }
     public string RatingDescription { get; set; }
 
-    public Workout()
+    public WorkoutCSV()
     {
 
     }
-
 }

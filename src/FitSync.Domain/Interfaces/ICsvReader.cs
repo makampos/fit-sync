@@ -4,5 +4,5 @@ namespace FitSync.Domain.Interfaces;
 
 public interface ICsvReader
 {
-    Task<IEnumerable<Workout>> ReadWorkoutsAsync(MemoryStream inputStream);
+    Task<IEnumerable<WorkoutCSV>> ReadWorkoutsAsync(MemoryStream inputStream);
 }

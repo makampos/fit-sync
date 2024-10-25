@@ -8,18 +8,18 @@ namespace FitSync.Infrastructure.FileHandling;
 
 public class CsvHelperReader : ICsvReader
 {
-    public async Task<IEnumerable<Workout>> ReadWorkoutsAsync(MemoryStream inputStream)
+    public async Task<IEnumerable<WorkoutCSV>> ReadWorkoutsAsync(MemoryStream inputStream)
     {
         using var reader = new StreamReader(inputStream);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
         csv.Context.RegisterClassMap<WorkoutMap>();
 
-        var records = new List<Workout>();
+        var records = new List<WorkoutCSV>();
 
         while (await csv.ReadAsync())
         {
-            var record = csv.GetRecord<Workout>();
+            var record = csv.GetRecord<WorkoutCSV>();
             records.Add(record);
         }
 
