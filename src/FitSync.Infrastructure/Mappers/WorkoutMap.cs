@@ -3,7 +3,7 @@ using FitSync.Domain.Entities;
 
 namespace FitSync.Infrastructure.Mappers;
 
-public class WorkoutMap : ClassMap<Workout>
+public class WorkoutMap : ClassMap<WorkoutCSV>
 {
     public WorkoutMap()
     {

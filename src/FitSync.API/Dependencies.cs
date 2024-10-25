@@ -24,6 +24,9 @@ public static class Dependencies
     {
         services.AddScoped<ICsvReader, CsvHelperReader>();
         services.AddScoped<IDataImportService, DataImportService>();
+        services.AddScoped<IWorkoutService, WorkoutService>();
+        services.AddScoped<IUserService, UserService>();
+
         return services;
     }
 
@@ -39,6 +42,7 @@ public static class Dependencies
     {
         services.AddScoped(typeof(IFitSyncUnitOfWork), typeof(FitSyncUnitOfWork));
         services.AddScoped(typeof(IWorkoutRepository), typeof(WorkoutRepository));
+        services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
         return services;
     }
 

@@ -1,3 +1,4 @@
+using FitSync.Domain.Dtos;
 using FitSync.Domain.Entities;
 using FitSync.Domain.Enums;
 
@@ -5,13 +6,13 @@ namespace FitSync.Application.Mappers;
 
 public static class WorkoutMapper
 {
-    public static WorkoutEntity ToDomainEntity(this Workout workout)
+    public static WorkoutEntity ToDomainEntity(this WorkoutCSV workoutCsv)
     {
         return new WorkoutEntity
         {
-            Title = workout.Title,
-            Description = workout.Description,
-            Type = workout.Type switch
+            Title = workoutCsv.Title,
+            Description = workoutCsv.Description,
+            Type = workoutCsv.Type switch
             {
               "Strength" => WorkoutType.Strength,
               "Stretching" => WorkoutType.Stretching,
@@ -22,14 +23,98 @@ public static class WorkoutMapper
               "OlympicWeightlifting" => WorkoutType.OlympicWeightlifting,
               _ => WorkoutType.Unkonwn
             },
-            BodyPart = workout.BodyPart,
-            Equipment = workout.Equipment,
-            WorkoutLevel = workout.Level switch
+            BodyPart = workoutCsv.BodyPart,
+            Equipment = workoutCsv.Equipment,
+            WorkoutLevel = workoutCsv.Level switch
             {
                 "Beginner" => WorkoutLevel.Beginner,
                 "Intermediate" => WorkoutLevel.Intermediate,
                 _ => WorkoutLevel.Unkonwn
             }
         };
+    }
+
+    public static WorkoutEntity ToDomainEntity(this WorkoutDto workoutEntity)
+    {
+        return new WorkoutEntity
+        {
+            Title = workoutEntity.Title,
+            Description = workoutEntity.Description,
+            Type = workoutEntity.Type,
+            BodyPart = workoutEntity.BodyPart,
+            Equipment = workoutEntity.Equipment,
+            WorkoutLevel = workoutEntity.Level
+        };
+    }
+
+    public static WorkoutDto ToDto(this WorkoutEntity workoutEntity)
+    {
+        return new WorkoutDto(
+            workoutEntity.Id,
+            workoutEntity.Title,
+            workoutEntity.Description,
+            workoutEntity.Type,
+            workoutEntity.BodyPart,
+            workoutEntity.Equipment,
+            workoutEntity.WorkoutLevel
+        );
+    }
+
+    public static UserEntity ToDomainEntity(this UserDto userDto)
+    {
+        return new UserEntity
+        {
+            Name = userDto.Name,
+            Age = userDto.Age,
+            Genre = userDto.Genre,
+            WorkoutPlans = userDto.WorkoutPlans.Select(wp => wp.ToDomainEntity()).ToList()
+        };
+    }
+
+    public static UserDto ToDto(this UserEntity userEntity)
+    {
+        return new UserDto(
+            userEntity.Name,
+            userEntity.Age,
+            userEntity.Genre,
+            userEntity.WorkoutPlans.Select(wp => wp.ToDto()).ToList()
+        );
+    }
+
+    public static WorkoutPlanEntity ToDomainEntity(this WorkoutPlanDto workoutPlanDto)
+    {
+        return new WorkoutPlanEntity
+        {
+            Name = workoutPlanDto.Name,
+            UserId = workoutPlanDto.UserId,
+            Workouts = workoutPlanDto.Workouts.Select(w => w.ToDomainEntity()).ToList()
+        };
+    }
+
+    public static WorkoutPlanDto ToDto(this WorkoutPlanEntity workoutPlanEntity)
+    {
+        return new WorkoutPlanDto(
+            workoutPlanEntity.Id,
+            workoutPlanEntity.Name,
+            workoutPlanEntity.UserId,
+            workoutPlanEntity.Workouts.Select(w => w.ToDto()).ToList()
+        );
+    }
+
+    public static WorkoutPlanWorkoutEntity ToDomainEntity(this WorkoutPlanWorkoutDto workoutPlanWorkoutDto)
+    {
+        return new WorkoutPlanWorkoutEntity
+        {
+            WorkoutId = workoutPlanWorkoutDto.WorkoutId,
+            WorkoutPlanId = workoutPlanWorkoutDto.WorkoutPlanId
+        };
+    }
+
+    public static WorkoutPlanWorkoutDto ToDto(this WorkoutPlanWorkoutEntity workoutPlanWorkoutEntity)
+    {
+        return new WorkoutPlanWorkoutDto(
+            workoutPlanWorkoutEntity.WorkoutId,
+            workoutPlanWorkoutEntity.WorkoutPlanId
+        );
     }
 }
