@@ -26,6 +26,7 @@ public static class Dependencies
         services.AddScoped<IDataImportService, DataImportService>();
         services.AddScoped<IWorkoutService, WorkoutService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
 
         return services;
     }
@@ -43,6 +44,8 @@ public static class Dependencies
         services.AddScoped(typeof(IFitSyncUnitOfWork), typeof(FitSyncUnitOfWork));
         services.AddScoped(typeof(IWorkoutRepository), typeof(WorkoutRepository));
         services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+        services.AddScoped(typeof(IWorkoutPlanRepository), typeof(WorkoutPlanRepository));
+
         return services;
     }
 
