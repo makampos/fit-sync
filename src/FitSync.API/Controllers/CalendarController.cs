@@ -1,3 +1,4 @@
+using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,11 @@ public class CalendarController : ControllerBase
 
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status200OK, "Event added to calendar")]
-    public async Task<IActionResult> AddEventAsync([FromBody] ICollection<WorkoutPlanViewModel> workoutPlansViewModel)
+    public async Task<IActionResult> AddEventAsync(
+        [FromBody] WorkoutPlanCalendarEvent workoutPlanCalendarEvents)
     {
         _logger.LogInformation("Adding new event to calendar");
-        var result = await _calendarService.AddEventAsync(workoutPlansViewModel);
+        var result = await _calendarService.AddEventAsync(workoutPlanCalendarEvents);
         return Ok(result);
     }
 }
