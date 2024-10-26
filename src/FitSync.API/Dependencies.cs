@@ -27,6 +27,7 @@ public static class Dependencies
         services.AddScoped<IWorkoutService, WorkoutService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+        services.AddScoped<ICalendarService, CalendarService>();
 
         return services;
     }
