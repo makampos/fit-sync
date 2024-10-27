@@ -1,6 +1,7 @@
+using System.Text;
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
-using FitSync.Domain.ViewModels;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -20,12 +21,17 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerResponse(StatusCodes.Status200OK, "Event added to calendar")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Event added to calendar", typeof(FileContentHttpResult))]
     public async Task<IActionResult> AddEventAsync(
         [FromBody] WorkoutPlanCalendarEvent workoutPlanCalendarEvents)
     {
         _logger.LogInformation("Adding new event to calendar");
-        var result = await _calendarService.AddEventAsync(workoutPlanCalendarEvents);
-        return Ok(result);
+        var content = await _calendarService.AddEventAsync(workoutPlanCalendarEvents);
+
+        var fileBytes = Encoding.UTF8.GetBytes(content);
+
+        var file =  File(fileBytes, "text/calendar", $"{nameof(workoutPlanCalendarEvents)}.ics");
+
+        return file;
     }
 }

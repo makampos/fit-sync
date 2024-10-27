@@ -1,7 +1,6 @@
 using FitSync.Application.Extensions;
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
-using FitSync.Domain.ViewModels;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
@@ -19,18 +18,15 @@ public class CalendarService : ICalendarService
         _logger = logger;
     }
 
-    public async Task GetEventsAsync(DateTime startDate, DateTime endDate)
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<string> AddEventAsync(WorkoutPlanCalendarEvent workoutPlanCalendarEvents)
     {
+
+        _logger.LogInformation("Adding new event to calendar");
+
         var calendar = new Calendar();
 
         workoutPlanCalendarEvents.WorkoutPlansViewModel.ToList().ForEach(workoutPlan =>
         {
-            var cont = 0;
             var rrule = new RecurrencePattern(FrequencyType.Monthly) // monthly, weekly, daily
             {
                 ByDay = new List<WeekDay> { new WeekDay((DayOfWeek)workoutPlan.Key) }, // Day of the week
@@ -45,12 +41,10 @@ public class CalendarService : ICalendarService
                 // End = new CalDateTime(),
                 Transparency = TransparencyType.Transparent,
                 RecurrenceRules = new List<RecurrencePattern> { rrule },
-                Summary =  workoutPlan.Value.ElementAtOrDefault(cont)?.Name, // Workout Plan Title
-                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value.SelectMany(x => x.WorkoutViewModels)), // Workout Plan title
+                Summary =  workoutPlan.Value.First()?.Name, // Calendar event title
+                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value.SelectMany(x => x.WorkoutViewModels)), // Calendar event description
                 IsAllDay = true,
             };
-
-            cont++;
 
             calendar.Events.Add(calendarEvent);
         });
@@ -59,15 +53,5 @@ public class CalendarService : ICalendarService
         var serializedCalendar = serializer.SerializeToString(calendar);
 
         return  Task.FromResult(serializedCalendar);
-    }
-
-    public async Task UpdateEventAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task DeleteEventAsync(string eventId)
-    {
-        throw new NotImplementedException();
     }
 }
