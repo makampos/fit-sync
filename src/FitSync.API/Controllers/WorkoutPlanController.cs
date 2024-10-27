@@ -1,5 +1,6 @@
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
+using FitSync.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -34,7 +35,7 @@ public class WorkoutPlanController : ControllerBase
 
     [HttpGet("{id}", Name = nameof(GetWorkoutPlanByIdAsync))]
     [SwaggerOperation("Get Workout Plan by Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanViewModel))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
     public async Task<IActionResult> GetWorkoutPlanByIdAsync(int id)
     {
