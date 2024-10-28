@@ -91,12 +91,32 @@ public class FitSyncDbContext : DbContext
 
         modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
             .HasOne(wpw => wpw.WorkoutPlan)
-            .WithMany(wp => wp.Workouts)
+            .WithMany(wp => wp.WorkoutPlanWorkoutEntities)
             .HasForeignKey(wpw => wpw.WorkoutPlanId);
 
         modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
             .HasOne(wpw => wpw.Workout)
             .WithMany(w => w.WorkoutPlans)
             .HasForeignKey(wpw => wpw.WorkoutId);
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.Sets)
+            .HasColumnType("int");
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.RepsMin)
+            .HasColumnType("int");
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.RepsMax)
+            .HasColumnType("int");
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.RestBetweenSets)
+            .HasColumnType("int");
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.Notes)
+            .HasColumnType("varchar(1000)");
     }
 }

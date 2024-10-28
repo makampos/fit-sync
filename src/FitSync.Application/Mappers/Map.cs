@@ -1,11 +1,13 @@
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Entities;
 using FitSync.Domain.Enums;
+using FitSync.Domain.Features.Users;
+using FitSync.Domain.Features.WorkoutPlans;
 using FitSync.Domain.ViewModels;
 
 namespace FitSync.Application.Mappers;
 
-public static class WorkoutMapper
+public static class Map
 {
     public static WorkoutEntity ToDomainEntity(this WorkoutCSV workoutCsv)
     {
@@ -61,15 +63,9 @@ public static class WorkoutMapper
         );
     }
 
-    public static UserEntity ToDomainEntity(this UserDto userDto)
+    public static UserEntity ToDomainEntity(this AddUser addUser)
     {
-        return new UserEntity
-        {
-            Name = userDto.Name,
-            Age = userDto.Age,
-            Genre = userDto.Genre,
-            WorkoutPlans = userDto.WorkoutPlans.Select(wp => wp.ToDomainEntity()).ToList()
-        };
+       return UserEntity.Create(addUser.Name, addUser.Age, addUser.Genre);
     }
 
     public static UserDto ToDto(this UserEntity userEntity)
@@ -88,7 +84,7 @@ public static class WorkoutMapper
         {
             Name = addWorkoutPlanDto.Name,
             UserId = addWorkoutPlanDto.UserId,
-            Workouts = addWorkoutPlanDto.WorkoutsDto.Select(w => w.ToDomainEntity()).ToList()
+            WorkoutPlanWorkoutEntities = addWorkoutPlanDto.WorkoutsDto.Select(w => w.ToDomainEntity()).ToList()
         };
     }
 
@@ -98,7 +94,7 @@ public static class WorkoutMapper
         {
             Name = workoutPlanDto.Name,
             UserId = workoutPlanDto.UserId,
-            Workouts = workoutPlanDto.WorkoutPlans.Select(w => w.ToDomainEntity()).ToList()
+            WorkoutPlanWorkoutEntities = workoutPlanDto.WorkoutPlans.Select(w => w.ToDomainEntity()).ToList()
         };
     }
 
@@ -108,16 +104,13 @@ public static class WorkoutMapper
             workoutPlanEntity.Id,
             workoutPlanEntity.Name,
             workoutPlanEntity.UserId,
-            workoutPlanEntity.Workouts.Select(w => w.ToDto()).ToList()
+            workoutPlanEntity.WorkoutPlanWorkoutEntities.Select(w => w.ToDto()).ToList()
         );
     }
 
     public static WorkoutPlanWorkoutEntity ToDomainEntity(this WorkoutPlanWorkoutDto workoutPlanWorkoutDto)
     {
-        return new WorkoutPlanWorkoutEntity
-        {
-            WorkoutId = workoutPlanWorkoutDto.WorkoutId
-        };
+        return WorkoutPlanWorkoutEntity.Create(workoutPlanWorkoutDto.WorkoutId);
     }
 
     public static WorkoutPlanWorkoutDto ToDto(this WorkoutPlanWorkoutEntity workoutPlanWorkoutEntity)
@@ -127,7 +120,7 @@ public static class WorkoutMapper
         );
     }
 
-    public static WorkoutViewModel ToViewModel(this WorkoutEntity workoutEntity)
+    public static WorkoutViewModel ToViewModel(this WorkoutEntity workoutEntity, ExerciseSet? exerciseSet = null)
     {
         return new WorkoutViewModel(
             workoutEntity.Id,
@@ -136,7 +129,24 @@ public static class WorkoutMapper
             workoutEntity.Type,
             workoutEntity.BodyPart,
             workoutEntity.Equipment,
-            workoutEntity.WorkoutLevel
+            workoutEntity.WorkoutLevel,
+            exerciseSet
         );
+    }
+
+    public static WorkoutPlanEntity ToDomainEntity(this AddWorkoutPlan addWorkoutPlan)
+    {
+        return new WorkoutPlanEntity
+        {
+            Name = addWorkoutPlan.Name,
+            UserId = addWorkoutPlan.UserId,
+            WorkoutPlanWorkoutEntities = addWorkoutPlan.Workouts.Select(w => WorkoutPlanWorkoutEntity.Create(
+                w.Key,
+                w.Value.Sets,
+                w.Value.RepsMin,
+                w.Value.RepsMax,
+                w.Value.RestBetweenSets,
+                w.Value.Notes)).ToList()
+        };
     }
 }

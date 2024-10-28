@@ -4,6 +4,8 @@ namespace FitSync.Domain.Entities;
 
 public class WorkoutEntity : TrackableEntity
 {
+    public WorkoutEntity() { }
+
     public string Title { get; set; }
     public string Description { get; set; }
     public WorkoutType Type { get; set; }

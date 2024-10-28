@@ -1,4 +1,5 @@
 using FitSync.Domain.Dtos;
+using FitSync.Domain.Features.WorkoutPlans;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -50,11 +51,11 @@ public class WorkoutPlanController : ControllerBase
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status201Created, "Workout plan created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
-    public async Task<IActionResult> CreateWorkoutPlanAsync([FromBody] AddWorkoutPlanDto workoutPlanDto)
+    public async Task<IActionResult> CreateWorkoutPlanAsync([FromBody] AddWorkoutPlan addWorkoutPlan)
     {
         _logger.LogInformation("Creating new workout plan");
 
-        var serviceResponse = await _workoutPlanService.CreateWorkPlanAsync(workoutPlanDto);
+        var serviceResponse = await _workoutPlanService.CreateWorkPlanAsync(addWorkoutPlan);
 
         var createdResource = new { Id = serviceResponse.Data, Version = "1.0" };
         var routeValues = new { id = createdResource.Id, version = createdResource.Version };

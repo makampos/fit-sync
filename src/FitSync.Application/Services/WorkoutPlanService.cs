@@ -1,5 +1,5 @@
 using FitSync.Application.Mappers;
-using FitSync.Domain.Dtos;
+using FitSync.Domain.Features.WorkoutPlans;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
 using FitSync.Domain.ViewModels;
@@ -19,11 +19,11 @@ public class WorkoutPlanService : IWorkoutPlanService
         _fitSyncUnitOfWork = fitSyncUnitOfWork;
     }
 
-    public async Task<ServiceResponse<int>> CreateWorkPlanAsync(AddWorkoutPlanDto addWorkoutPlanDto)
+    public async Task<ServiceResponse<int>> CreateWorkPlanAsync(AddWorkoutPlan addWorkoutPlan)
     {
         _logger.LogInformation("Creating new workout plan");
 
-        var workPlanEntity = addWorkoutPlanDto.ToDomainEntity();
+        var workPlanEntity = addWorkoutPlan.ToDomainEntity();
         await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workPlanEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
 
@@ -34,21 +34,25 @@ public class WorkoutPlanService : IWorkoutPlanService
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
 
-        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository.GetWorkoutPlanIncludedWorkoutsAsync(id);
+        var workoutPlanWorkoutsEntity =
+            await _fitSyncUnitOfWork.WorkoutPlanWorkoutRepository.GetWorkoutPlanWorkoutsByWorkoutPlanIdAsync(id);
 
-        if (workoutPlanEntity is null)
+        if (!workoutPlanWorkoutsEntity.Any())
         {
             return ServiceResponse<WorkoutPlanViewModel>.FailureResult($"Workout plan with id {id} not found");
         }
 
-        var workoutEntities =  await _fitSyncUnitOfWork.WorkoutRepository
-            .GetWorkoutsByIdsAsync(workoutPlanEntity.Workouts.Select(x => x.WorkoutId));
+        var workoutPlanId = workoutPlanWorkoutsEntity.First().WorkoutPlanId;
+        var workoutPlanName = workoutPlanWorkoutsEntity.First().WorkoutPlan.Name;
 
-        var workoutViewModel =
-            new WorkoutPlanViewModel(workoutPlanEntity.Id, workoutPlanEntity.Name,
-                workoutEntities.Select(x => x.ToViewModel()).ToList());
+        var workoutPlanViewModel = WorkoutPlanViewModel.Create(
+            id: workoutPlanId,
+            name: workoutPlanName,
+            workoutsViewModel: workoutPlanWorkoutsEntity
+                .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.RestBetweenSets, w.Notes)))
+                .ToList());
 
-        return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutViewModel);
+        return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutPlanViewModel);
     }
 
 
@@ -65,9 +69,14 @@ public class WorkoutPlanService : IWorkoutPlanService
         }
 
         var workoutPlanViewModels = workoutPlanEntity
-            .Select(x => new WorkoutPlanViewModel(x.Id, x.Name, x.Workouts
-                .Select(w => w.Workout.ToViewModel())
-                .ToList()));
+            .Select(x => WorkoutPlanViewModel.Create(
+                id: x.Id,
+                name: x.Name,
+                workoutsViewModel: x.WorkoutPlanWorkoutEntities
+                    .Select(w =>
+                        w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.RestBetweenSets,
+                            w.Notes)))
+                    .ToList()));
 
         return ServiceResponse<IEnumerable<WorkoutPlanViewModel>>.SuccessResult(workoutPlanViewModels);
     }

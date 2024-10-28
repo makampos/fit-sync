@@ -1,4 +1,5 @@
 using FitSync.Domain.Dtos;
+using FitSync.Domain.Features.Users;
 using FitSync.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -47,10 +48,10 @@ public class UserController : ControllerBase
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status201Created, "User created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "User data is invalid")]
-    public async Task<IActionResult> CreateUserAsync([FromBody] UserDto user)
+    public async Task<IActionResult> CreateUserAsync([FromBody] AddUser addUser)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(CreateUserAsync));
-        var serviceResponse = await _userService.CreateUserAsync(user);
+        var serviceResponse = await _userService.CreateUserAsync(addUser);
 
         var createdResource = new { Id = serviceResponse.Data, Version = "1.0" };
         var routeValues = new { id = createdResource.Id, version = createdResource.Version };

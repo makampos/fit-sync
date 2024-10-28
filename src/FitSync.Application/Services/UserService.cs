@@ -1,5 +1,6 @@
 using FitSync.Application.Mappers;
 using FitSync.Domain.Dtos;
+using FitSync.Domain.Features.Users;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
 using FitSync.Domain.ViewModels;
@@ -18,9 +19,9 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<int>> CreateUserAsync(UserDto user)
+    public async Task<ServiceResponse<int>> CreateUserAsync(AddUser addUser)
     {
-        var userEntity = user.ToDomainEntity();
+        var userEntity = addUser.ToDomainEntity();
 
         await _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
@@ -47,6 +48,7 @@ public class UserService : IUserService
 
     public async Task<ServiceResponse<UserViewModel>> GetUserByIdIncludeAllAsync(int id)
     {
+        //TODO: implement proper view model
         _logger.LogInformation("Getting user by id: {Id} including all related data", id);
 
         var userEntity = await _fitSyncUnitOfWork.UserRepository.GetUserByIdIncludeAllAsync(id);
@@ -57,14 +59,8 @@ public class UserService : IUserService
             return ServiceResponse<UserViewModel>.FailureResult("User not found");
         }
 
-        //TODO: Refactor this logic to user Builder Pattern
-        var workoutPlans = userEntity.WorkoutPlans
-            .Select(wp => new WorkoutPlanViewModel(wp.Id, wp.Name, wp.Workouts
-                .Select(w => w.Workout.ToViewModel())
-                .ToList()))
-            .ToList();
 
-        var userViewModel = new UserViewModel(userEntity.Name, userEntity.Age, userEntity.Genre, workoutPlans);
+        var userViewModel = new UserViewModel(userEntity.Name, userEntity.Age, userEntity.Genre);
 
         return ServiceResponse<UserViewModel>.SuccessResult(userViewModel);
     }
