@@ -1,8 +1,8 @@
 using FitSync.Domain.Enums;
 
-namespace FitSync.Domain.Dtos;
+namespace FitSync.Domain.Dtos.Workouts;
 
-public record WorkoutDto(
+public record UpdateWorkoutDto(
     int Id,
     string Title,
     string Description,

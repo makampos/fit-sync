@@ -1,4 +1,4 @@
-using FitSync.Domain.Dtos;
+using FitSync.Domain.Dtos.Workouts;
 using FitSync.Domain.Enums;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Results;
@@ -23,7 +23,7 @@ public class WorkoutController : ControllerBase
 
     [HttpGet("{id}", Name = nameof(GetByIdAsync))]
     [SwaggerOperation("Get Workout by Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout found", typeof(WorkoutDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workout found", typeof(AddWorkoutDto))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout not found")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
@@ -37,7 +37,7 @@ public class WorkoutController : ControllerBase
 
     [HttpGet]
     [SwaggerOperation("Get All Workouts")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workouts", typeof(PagedResult<WorkoutDto>))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workouts", typeof(PagedResult<AddWorkoutDto>))]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] WorkoutType? type = null,
         [FromQuery] string? bodyPart = null,
@@ -58,10 +58,10 @@ public class WorkoutController : ControllerBase
     [SwaggerOperation("Create Workout")]
     [SwaggerResponse(StatusCodes.Status201Created, "Workout created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid Input")]
-    public async Task<IActionResult> CreateAsync(WorkoutDto workoutDto)
+    public async Task<IActionResult> CreateAsync(AddWorkoutDto addWorkoutDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(CreateAsync));
-        var serviceResponse = await _workoutService.CreateAsync(workoutDto);
+        var serviceResponse = await _workoutService.CreateAsync(addWorkoutDto);
 
         return CreatedAtRoute(nameof(GetByIdAsync), new { serviceResponse.Data }, serviceResponse.Data);
     }
@@ -70,10 +70,10 @@ public class WorkoutController : ControllerBase
     [SwaggerOperation("Update Workout")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Workout updated")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid Input")]
-    public async Task<IActionResult> UpdateAsync(WorkoutDto workout)
+    public async Task<IActionResult> UpdateAsync(UpdateWorkoutDto updateWorkoutDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(UpdateAsync));
-        var serviceResponse = await _workoutService.UpdateAsync(workout);
+        var serviceResponse = await _workoutService.UpdateAsync(updateWorkoutDto);
 
         return serviceResponse.Success
             ? NoContent()

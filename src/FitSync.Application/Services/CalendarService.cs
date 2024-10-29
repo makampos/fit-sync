@@ -1,5 +1,5 @@
 using FitSync.Application.Extensions;
-using FitSync.Domain.Dtos;
+using FitSync.Domain.Dtos.CalendarEvents;
 using FitSync.Domain.Interfaces;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
@@ -18,31 +18,31 @@ public class CalendarService : ICalendarService
         _logger = logger;
     }
 
-    public Task<string> AddEventAsync(WorkoutPlanCalendarEvent workoutPlanCalendarEvents)
+    public Task<string> AddEventAsync(AddWorkoutPlanCalendarEventDto addWorkoutPlanCalendarEventsDto)
     {
 
         _logger.LogInformation("Adding new event to calendar");
 
         var calendar = new Calendar();
 
-        workoutPlanCalendarEvents.WorkoutPlansViewModel.ToList().ForEach(workoutPlan =>
+        addWorkoutPlanCalendarEventsDto.WorkoutPlansViewModel.ToList().ForEach(workoutPlan =>
         {
             var rrule = new RecurrencePattern(FrequencyType.Monthly) // monthly, weekly, daily
             {
                 ByDay = new List<WeekDay> { new WeekDay((DayOfWeek)workoutPlan.Key) }, // Day of the week
                 // Interval = 1,
                 // Count = 1,
-                Until = new DateTime(workoutPlanCalendarEvents.Until.Year, workoutPlanCalendarEvents.Until.Month, workoutPlanCalendarEvents.Until.Day) // end recurrence on 30th November 2024
+                Until = new DateTime(addWorkoutPlanCalendarEventsDto.Until.Year, addWorkoutPlanCalendarEventsDto.Until.Month, addWorkoutPlanCalendarEventsDto.Until.Day) // end recurrence on 30th November 2024
             };
 
             var calendarEvent = new CalendarEvent()
             {
-                Start = new CalDateTime(workoutPlanCalendarEvents.StartDate.Year, workoutPlanCalendarEvents.StartDate.Month, workoutPlanCalendarEvents.StartDate.Day),
+                Start = new CalDateTime(addWorkoutPlanCalendarEventsDto.StartDate.Year, addWorkoutPlanCalendarEventsDto.StartDate.Month, addWorkoutPlanCalendarEventsDto.StartDate.Day),
                 // End = new CalDateTime(),
                 Transparency = TransparencyType.Transparent,
                 RecurrenceRules = new List<RecurrencePattern> { rrule },
                 Summary =  workoutPlan.Value.First()?.Name, // Calendar event title
-                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value.SelectMany(x => x.WorkoutViewModels)), // Calendar event description
+                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value), // Calendar event description
                 IsAllDay = true,
             };
 

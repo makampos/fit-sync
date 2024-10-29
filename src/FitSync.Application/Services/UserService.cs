@@ -1,8 +1,8 @@
-using FitSync.Application.Mappers;
-using FitSync.Domain.Dtos;
+using FitSync.Application.Extensions;
+using FitSync.Domain.Dtos.Users;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
-using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.Users;
 using Microsoft.Extensions.Logging;
 
 namespace FitSync.Application.Services;
@@ -18,9 +18,9 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<int>> CreateUserAsync(UserDto user)
+    public async Task<ServiceResponse<int>> CreateUserAsync(AddUserDto addUserDto)
     {
-        var userEntity = user.ToDomainEntity();
+        var userEntity = addUserDto.ToDomainEntity();
 
         await _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
@@ -30,7 +30,7 @@ public class UserService : IUserService
         return ServiceResponse<int>.SuccessResult(userEntity.Id);
     }
 
-    public async Task<ServiceResponse<UserDto>> GetUserByIdAsync(int id)
+    public async Task<ServiceResponse<UserViewModel>> GetUserByIdAsync(int id)
     {
         _logger.LogInformation("Getting user by id: {Id}", id);
 
@@ -39,13 +39,13 @@ public class UserService : IUserService
         if (userEntity is null)
         {
             _logger.LogWarning("User not found with id: {Id}", id);
-            return ServiceResponse<UserDto>.FailureResult("User not found");
+            return ServiceResponse<UserViewModel>.FailureResult("User not found");
         }
 
-        return ServiceResponse<UserDto>.SuccessResult(userEntity.ToDto());
+        return ServiceResponse<UserViewModel>.SuccessResult(userEntity.ToViewModel());
     }
 
-    public async Task<ServiceResponse<UserViewModel>> GetUserByIdIncludeAllAsync(int id)
+    public async Task<ServiceResponse<UserViewModelIncluded>> GetUserByIdIncludeAllAsync(int id)
     {
         _logger.LogInformation("Getting user by id: {Id} including all related data", id);
 
@@ -54,20 +54,11 @@ public class UserService : IUserService
         if (userEntity is null)
         {
             _logger.LogWarning("User not found with id: {Id}", id);
-            return ServiceResponse<UserViewModel>.FailureResult("User not found");
+            return ServiceResponse<UserViewModelIncluded>.FailureResult("User not found");
         }
 
-        //TODO: Refactor this logic to user Builder Pattern
-        var workoutPlans = userEntity.WorkoutPlans
-            .Select(wp => new WorkoutPlanViewModel(wp.Id, wp.Name, wp.Workouts
-                .Select(w => w.Workout.ToViewModel())
-                .ToList()))
-            .ToList();
+        var userViewModelIncluded = userEntity.ToViewModelIncluded();
 
-        var userViewModel = new UserViewModel(userEntity.Name, userEntity.Age, userEntity.Genre, workoutPlans);
-
-        return ServiceResponse<UserViewModel>.SuccessResult(userViewModel);
+        return ServiceResponse<UserViewModelIncluded>.SuccessResult(userViewModelIncluded);
     }
-
-    //TODO: Implement other methods
 }

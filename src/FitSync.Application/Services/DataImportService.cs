@@ -1,4 +1,4 @@
-using FitSync.Application.Mappers;
+using FitSync.Application.Extensions;
 using FitSync.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 

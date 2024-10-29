@@ -12,7 +12,7 @@ public class UserRepository(FitSyncDbContext fitSyncDbContext)
     {
         return await SetAsTracking
             .Include(u => u.WorkoutPlans)
-            .ThenInclude(wp => wp.Workouts)
+            .ThenInclude(wp => wp.WorkoutPlanWorkoutEntities)
             .ThenInclude(w => w.Workout)
             .FirstOrDefaultAsync(u => u.Id == id);
     }

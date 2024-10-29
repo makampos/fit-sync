@@ -46,6 +46,7 @@ public static class Dependencies
         services.AddScoped(typeof(IWorkoutRepository), typeof(WorkoutRepository));
         services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
         services.AddScoped(typeof(IWorkoutPlanRepository), typeof(WorkoutPlanRepository));
+        services.AddScoped(typeof(IWorkoutPlanWorkoutRepository), typeof(WorkoutPlanWorkoutRepository));
 
         return services;
     }

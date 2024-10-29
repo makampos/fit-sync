@@ -5,9 +5,21 @@ namespace FitSync.Domain.Entities;
 // TODO: Create user Profile entity
 public class UserEntity : TrackableEntity
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
-    public Genre Genre { get; set; }
+    private UserEntity(string name, int age, Genre genre)
+    {
+        Name = name;
+        Age = age;
+        Genre = genre;
+    }
+
+    public string Name { get; private set; }
+    public int Age { get; private set; }
+    public Genre Genre { get; private set; }
 
     public virtual ICollection<WorkoutPlanEntity> WorkoutPlans { get; set; } = new List<WorkoutPlanEntity>();
+
+    public static UserEntity Create(string name, int age, Genre genre)
+    {
+        return new UserEntity(name, age, genre);
+    }
 }
