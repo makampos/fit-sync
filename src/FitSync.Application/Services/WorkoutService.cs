@@ -1,9 +1,10 @@
-using FitSync.Application.Mappers;
-using FitSync.Domain.Dtos;
+using FitSync.Application.Extensions;
+using FitSync.Domain.Dtos.Workouts;
 using FitSync.Domain.Enums;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
 using FitSync.Domain.Results;
+using FitSync.Domain.ViewModels.Workouts;
 using Microsoft.Extensions.Logging;
 
 namespace FitSync.Application.Services;
@@ -19,7 +20,7 @@ public class WorkoutService : IWorkoutService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<WorkoutDto>> GetByIdAsync(int id)
+    public async Task<ServiceResponse<WorkoutViewModel>> GetByIdAsync(int id)
     {
         _logger.LogInformation("Getting workout by id: {Id}", id);
 
@@ -28,23 +29,23 @@ public class WorkoutService : IWorkoutService
         if (workoutEntity is null)
         {
             _logger.LogWarning("Workout not found with id: {Id}", id);
-            return ServiceResponse<WorkoutDto>.FailureResult("Workout not found");
+            return ServiceResponse<WorkoutViewModel>.FailureResult("Workout not found");
         }
 
-        return ServiceResponse<WorkoutDto>.SuccessResult(workoutEntity.ToDto());
+        return ServiceResponse<WorkoutViewModel>.SuccessResult(workoutEntity.ToViewModel());
     }
 
-    public async Task<ServiceResponse<PagedResult<WorkoutDto>>> GetAllAsync(int pageNumber, int pageSize)
+    public async Task<ServiceResponse<PagedResult<WorkoutViewModel>>> GetAllAsync(int pageNumber, int pageSize)
     {
         _logger.LogInformation("Getting all workouts");
 
         var pagedResult = await _fitSyncUnitOfWork.WorkoutRepository.GetAllAsync(pageNumber, pageSize,
             CancellationToken.None);
 
-        return ServiceResponse<PagedResult<WorkoutDto>>.SuccessResult(pagedResult.ToDto(x => x.ToDto()));
+        return ServiceResponse<PagedResult<WorkoutViewModel>>.SuccessResult(pagedResult.ToViewModel(x => x.ToViewModel()));
     }
 
-    public async Task<ServiceResponse<PagedResult<WorkoutDto>>> GetFilteredWorkoutsAsync(
+    public async Task<ServiceResponse<PagedResult<WorkoutViewModel>>> GetFilteredWorkoutsAsync(
         WorkoutType? type = null, string? bodyPart = null, string? equipment = null, WorkoutLevel? level = null,
         int pageNumber = 1, int pageSize = 10)
     {
@@ -59,14 +60,15 @@ public class WorkoutService : IWorkoutService
             pageSize,
             CancellationToken.None);
 
-        return ServiceResponse<PagedResult<WorkoutDto>>.SuccessResult(pagedResult.ToDto(x => x.ToDto()));
+        return ServiceResponse<PagedResult<WorkoutViewModel>>.SuccessResult(pagedResult.ToViewModel(x =>
+            x.ToViewModel()));
     }
 
-    public async Task<ServiceResponse<int>> CreateAsync(WorkoutDto workout)
+    public async Task<ServiceResponse<int>> CreateAsync(AddWorkoutDto addWorkoutDto)
     {
-        _logger.LogInformation("Creating workout: {Workout}", workout);
+        _logger.LogInformation("Creating workout: {Workout}", addWorkoutDto);
 
-        var workoutEntity = workout.ToDomainEntity();
+        var workoutEntity = addWorkoutDto.ToDomainEntity();
 
         await _fitSyncUnitOfWork.WorkoutRepository.AddAsync(workoutEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync(CancellationToken.None);
@@ -76,17 +78,20 @@ public class WorkoutService : IWorkoutService
         return ServiceResponse<int>.SuccessResult(workoutEntity.Id);
     }
 
-    public async Task<ServiceResponse<bool>> UpdateAsync(WorkoutDto workoutDto)
+    public async Task<ServiceResponse<bool>> UpdateAsync(UpdateWorkoutDto updateWorkoutDto)
     {
-        _logger.LogInformation("Updating workout: {Workout}", workoutDto);
+        _logger.LogInformation("Updating workout: {Workout}", updateWorkoutDto);
 
-        var workoutEntity = await _fitSyncUnitOfWork.WorkoutRepository.GetByIdAsync(workoutDto.Id, CancellationToken.None);
+        var workoutEntity = await _fitSyncUnitOfWork.WorkoutRepository.GetByIdAsync(updateWorkoutDto.Id, CancellationToken.None);
 
         if (workoutEntity is null)
         {
-            _logger.LogWarning("Workout not found with id: {Id}", workoutDto.Id);
+            _logger.LogWarning("Workout not found with id: {Id}", updateWorkoutDto.Id);
             return ServiceResponse<bool>.FailureResult("Workout not found");
         }
+
+        workoutEntity.Update(updateWorkoutDto.Title, updateWorkoutDto.Description, updateWorkoutDto.Type,
+            updateWorkoutDto.BodyPart, updateWorkoutDto.Equipment, updateWorkoutDto.Level);
 
         await _fitSyncUnitOfWork.WorkoutRepository.UpdateAsync(workoutEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync(CancellationToken.None);

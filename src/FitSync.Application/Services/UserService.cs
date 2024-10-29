@@ -1,5 +1,5 @@
-using FitSync.Application.Mappers;
-using FitSync.Domain.Features.Users;
+using FitSync.Application.Extensions;
+using FitSync.Domain.Dtos.Users;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
 using FitSync.Domain.ViewModels.Users;
@@ -18,9 +18,9 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<ServiceResponse<int>> CreateUserAsync(AddUser addUser)
+    public async Task<ServiceResponse<int>> CreateUserAsync(AddUserDto addUserDto)
     {
-        var userEntity = addUser.ToDomainEntity();
+        var userEntity = addUserDto.ToDomainEntity();
 
         await _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();

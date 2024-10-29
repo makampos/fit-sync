@@ -14,4 +14,14 @@ public class WorkoutEntity : TrackableEntity
     public WorkoutLevel WorkoutLevel { get; set; }
 
     public virtual ICollection<WorkoutPlanWorkoutEntity> WorkoutPlans { get; set; }
+
+    public void Update(string title, string description, WorkoutType type, string bodyPart, string equipment, WorkoutLevel level)
+    {
+        Title = title;
+        Description = description;
+        Type = type;
+        BodyPart = bodyPart;
+        Equipment = equipment;
+        WorkoutLevel = level;
+    }
 }

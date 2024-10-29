@@ -1,5 +1,5 @@
 using System.Text;
-using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.WorkoutPlans;
 
 namespace FitSync.Application.Extensions;
 
@@ -16,7 +16,7 @@ public static class WorkoutAggregator
 
         foreach (var workoutPlanVm in workoutPlanViewModels)
         {
-            foreach (var (workout, index) in workoutPlanVm.WorkoutsViewModel.WithIndex())
+            foreach (var (workout, index) in workoutPlanVm.WorkoutWithExercisesSetViewModel.WithIndex())
             {
                 builder.AppendLine($"Exercise {index} :" + workout.Title);
                 builder.AppendLine();

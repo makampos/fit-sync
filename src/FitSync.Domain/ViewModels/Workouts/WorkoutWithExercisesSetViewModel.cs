@@ -1,10 +1,10 @@
 using System.Text;
+using FitSync.Domain.Dtos.WorkoutPlans;
 using FitSync.Domain.Enums;
-using FitSync.Domain.Features.WorkoutPlans;
 
-namespace FitSync.Domain.ViewModels;
+namespace FitSync.Domain.ViewModels.Workouts;
 
-public record WorkoutViewModel(
+public record WorkoutWithExercisesSetViewModel(
     int Id,
     string Title,
     string Description,
@@ -14,7 +14,7 @@ public record WorkoutViewModel(
     WorkoutLevel Level,
     ExerciseSet ExerciseSet)
 {
-    public static WorkoutViewModel Create(
+    public static WorkoutWithExercisesSetViewModel Create(
         int id,
         string title,
         string description,
@@ -24,7 +24,7 @@ public record WorkoutViewModel(
         WorkoutLevel level,
         ExerciseSet exerciseSet)
     {
-        return new WorkoutViewModel(id, title, description, type, bodyPart, equipment, level, exerciseSet);
+        return new WorkoutWithExercisesSetViewModel(id, title, description, type, bodyPart, equipment, level, exerciseSet);
     }
 
     public override string ToString()

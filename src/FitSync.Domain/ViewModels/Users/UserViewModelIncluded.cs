@@ -1,4 +1,5 @@
 using FitSync.Domain.Enums;
+using FitSync.Domain.ViewModels.WorkoutPlans;
 
 namespace FitSync.Domain.ViewModels.Users;
 

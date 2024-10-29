@@ -1,8 +1,8 @@
-using FitSync.Domain.Dtos;
+using FitSync.Domain.Dtos.CalendarEvents;
 
 namespace FitSync.Domain.Interfaces;
 
 public interface ICalendarService
 {
-    Task<string> AddEventAsync(WorkoutPlanCalendarEvent workoutPlanCalendarEvents);
+    Task<string> AddEventAsync(AddWorkoutPlanCalendarEventDto addWorkoutPlanCalendarEventsDto);
 }

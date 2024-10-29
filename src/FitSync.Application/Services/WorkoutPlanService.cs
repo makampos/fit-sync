@@ -1,8 +1,8 @@
-using FitSync.Application.Mappers;
-using FitSync.Domain.Features.WorkoutPlans;
+using FitSync.Application.Extensions;
+using FitSync.Domain.Dtos.WorkoutPlans;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
-using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.WorkoutPlans;
 using Microsoft.Extensions.Logging;
 
 namespace FitSync.Application.Services;
@@ -19,18 +19,18 @@ public class WorkoutPlanService : IWorkoutPlanService
         _fitSyncUnitOfWork = fitSyncUnitOfWork;
     }
 
-    public async Task<ServiceResponse<int>> CreateWorkPlanAsync(AddWorkoutPlan addWorkoutPlan)
+    public async Task<ServiceResponse<int>> CreateWorkPlanAsync(AddWorkoutPlanDto addWorkoutPlanDto)
     {
         _logger.LogInformation("Creating new workout plan");
 
-        var workPlanEntity = addWorkoutPlan.ToDomainEntity();
+        var workPlanEntity = addWorkoutPlanDto.ToDomainEntity();
         await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workPlanEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
 
         return ServiceResponse<int>.SuccessResult(workPlanEntity.Id);
     }
 
-    public async Task<ServiceResponse<WorkoutPlanViewModel>> GetWorkoutPlansByIdAsync(int id)
+    public async Task<ServiceResponse<WorkoutPlanViewModel>> GetWorkoutPlanByIdAsync(int id)
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
 
@@ -48,7 +48,7 @@ public class WorkoutPlanService : IWorkoutPlanService
         var workoutPlanViewModel = WorkoutPlanViewModel.Create(
             id: workoutPlanId,
             name: workoutPlanName,
-            workoutsViewModel: workoutPlanWorkoutsEntity
+            workoutWithExercisesSetViewModel: workoutPlanWorkoutsEntity
                 .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax,
                     w.RestBetweenSets, w.Notes)))
                 .ToList());
@@ -73,7 +73,7 @@ public class WorkoutPlanService : IWorkoutPlanService
             .Select(x => WorkoutPlanViewModel.Create(
                 id: x.Id,
                 name: x.Name,
-                workoutsViewModel: x.WorkoutPlanWorkoutEntities
+                workoutWithExercisesSetViewModel: x.WorkoutPlanWorkoutEntities
                     .Select(w =>
                         w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.RestBetweenSets,
                             w.Notes)))

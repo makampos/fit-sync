@@ -1,9 +1,8 @@
-using FitSync.Domain.Dtos;
-using FitSync.Domain.Features.WorkoutPlans;
 using FitSync.Domain.Interfaces;
-using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.WorkoutPlans;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using AddWorkoutPlanDto = FitSync.Domain.Dtos.WorkoutPlans.AddWorkoutPlanDto;
 
 namespace FitSync.API.Controllers;
 
@@ -22,9 +21,9 @@ public class WorkoutPlanController : ControllerBase
 
     [HttpGet("user/{userId}")]
     [SwaggerOperation("Get Workout Plan by User Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
-    public async Task<IActionResult> GetWorkoutPlanByUserIdAsync([FromRoute] int userId)
+    public async Task<IActionResult> GetWorkoutPlansByUserIdAsync([FromRoute] int userId)
     {
         _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
         var serviceResponse = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userId);
@@ -41,7 +40,7 @@ public class WorkoutPlanController : ControllerBase
     public async Task<IActionResult> GetWorkoutPlanByIdAsync(int id)
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
-        var serviceResponse = await _workoutPlanService.GetWorkoutPlansByIdAsync(id);
+        var serviceResponse = await _workoutPlanService.GetWorkoutPlanByIdAsync(id);
 
         return serviceResponse.Success
             ? Ok(serviceResponse.Data)
@@ -51,11 +50,11 @@ public class WorkoutPlanController : ControllerBase
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status201Created, "Workout plan created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
-    public async Task<IActionResult> CreateWorkoutPlanAsync([FromBody] AddWorkoutPlan addWorkoutPlan)
+    public async Task<IActionResult> CreateWorkoutPlanAsync([FromBody] AddWorkoutPlanDto addWorkoutPlanDto)
     {
         _logger.LogInformation("Creating new workout plan");
 
-        var serviceResponse = await _workoutPlanService.CreateWorkPlanAsync(addWorkoutPlan);
+        var serviceResponse = await _workoutPlanService.CreateWorkPlanAsync(addWorkoutPlanDto);
 
         var createdResource = new { Id = serviceResponse.Data, Version = "1.0" };
         var routeValues = new { id = createdResource.Id, version = createdResource.Version };
