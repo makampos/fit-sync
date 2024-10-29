@@ -1,6 +1,6 @@
-using FitSync.Domain.Dtos;
 using FitSync.Domain.Features.Users;
 using FitSync.Domain.Interfaces;
+using FitSync.Domain.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -20,11 +20,12 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}",Name = nameof(GetUserByIdAsync))]
-    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserViewModel))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
-        _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(GetUserByIdAsync));
+        _logger.LogInformation("{controller} called within {action}", nameof(UserController),
+            nameof(GetUserByIdAsync));
         var serviceResponse = await _userService.GetUserByIdAsync(id);
 
         return serviceResponse.Success
@@ -32,8 +33,8 @@ public class UserController : ControllerBase
             : NotFound(serviceResponse.ErrorMessage);
     }
 
-    [HttpGet("{id}/include-all", Name = nameof(GetUserByIdIncludeAllAsync))]
-    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserDto))]
+    [HttpGet("{id}/included", Name = nameof(GetUserByIdIncludeAllAsync))]
+    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserViewModelIncluded))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
     public async Task<IActionResult> GetUserByIdIncludeAllAsync(int id)
     {

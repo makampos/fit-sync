@@ -4,6 +4,7 @@ using FitSync.Domain.Enums;
 using FitSync.Domain.Features.Users;
 using FitSync.Domain.Features.WorkoutPlans;
 using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.Users;
 
 namespace FitSync.Application.Mappers;
 
@@ -68,56 +69,22 @@ public static class Map
        return UserEntity.Create(addUser.Name, addUser.Age, addUser.Genre);
     }
 
-    public static UserDto ToDto(this UserEntity userEntity)
+    public static UserViewModel ToViewModel(this UserEntity userEntity)
     {
-        return new UserDto(
+        return UserViewModel.Create(
+            userEntity.Name,
+            userEntity.Age,
+            userEntity.Genre);
+    }
+
+    public static UserViewModelIncluded ToViewModelIncluded(this UserEntity userEntity)
+    {
+        return UserViewModelIncluded.Create(
             userEntity.Name,
             userEntity.Age,
             userEntity.Genre,
-            userEntity.WorkoutPlans.Select(wp => wp.ToDto()).ToList()
-        );
-    }
-
-    public static WorkoutPlanEntity ToDomainEntity(this AddWorkoutPlanDto addWorkoutPlanDto)
-    {
-        return new WorkoutPlanEntity
-        {
-            Name = addWorkoutPlanDto.Name,
-            UserId = addWorkoutPlanDto.UserId,
-            WorkoutPlanWorkoutEntities = addWorkoutPlanDto.WorkoutsDto.Select(w => w.ToDomainEntity()).ToList()
-        };
-    }
-
-    public static WorkoutPlanEntity ToDomainEntity(this WorkoutPlanDto workoutPlanDto)
-    {
-        return new WorkoutPlanEntity
-        {
-            Name = workoutPlanDto.Name,
-            UserId = workoutPlanDto.UserId,
-            WorkoutPlanWorkoutEntities = workoutPlanDto.WorkoutPlans.Select(w => w.ToDomainEntity()).ToList()
-        };
-    }
-
-    public static WorkoutPlanDto ToDto(this WorkoutPlanEntity workoutPlanEntity)
-    {
-        return new WorkoutPlanDto(
-            workoutPlanEntity.Id,
-            workoutPlanEntity.Name,
-            workoutPlanEntity.UserId,
-            workoutPlanEntity.WorkoutPlanWorkoutEntities.Select(w => w.ToDto()).ToList()
-        );
-    }
-
-    public static WorkoutPlanWorkoutEntity ToDomainEntity(this WorkoutPlanWorkoutDto workoutPlanWorkoutDto)
-    {
-        return WorkoutPlanWorkoutEntity.Create(workoutPlanWorkoutDto.WorkoutId);
-    }
-
-    public static WorkoutPlanWorkoutDto ToDto(this WorkoutPlanWorkoutEntity workoutPlanWorkoutEntity)
-    {
-        return new WorkoutPlanWorkoutDto(
-            workoutPlanWorkoutEntity.WorkoutId
-        );
+            userEntity.WorkoutPlans
+                .Select(w => w.ToViewModel()).ToList());
     }
 
     public static WorkoutViewModel ToViewModel(this WorkoutEntity workoutEntity, ExerciseSet? exerciseSet = null)
@@ -140,13 +107,32 @@ public static class Map
         {
             Name = addWorkoutPlan.Name,
             UserId = addWorkoutPlan.UserId,
-            WorkoutPlanWorkoutEntities = addWorkoutPlan.Workouts.Select(w => WorkoutPlanWorkoutEntity.Create(
-                w.Key,
-                w.Value.Sets,
-                w.Value.RepsMin,
-                w.Value.RepsMax,
-                w.Value.RestBetweenSets,
-                w.Value.Notes)).ToList()
+            WorkoutPlanWorkoutEntities = addWorkoutPlan.Workouts
+                .Select(w =>
+                    WorkoutPlanWorkoutEntity.Create(
+                    w.Key,
+                    w.Value.Sets,
+                    w.Value.RepsMin,
+                    w.Value.RepsMax,
+                    w.Value.RestBetweenSets,
+                    w.Value.Notes))
+                .ToList()
         };
+    }
+
+    public static WorkoutPlanViewModel ToViewModel(this WorkoutPlanEntity workoutPlanEntity)
+    {
+        return WorkoutPlanViewModel.Create(
+            workoutPlanEntity.Id,
+            workoutPlanEntity.Name,
+            workoutPlanEntity.WorkoutPlanWorkoutEntities
+                .Select(w => w.Workout
+                    .ToViewModel(ExerciseSet.Create(
+                        w.Sets,
+                        w.RepsMin,
+                        w.RepsMax,
+                        w.RestBetweenSets,
+                        w.Notes)))
+                .ToList());
     }
 }

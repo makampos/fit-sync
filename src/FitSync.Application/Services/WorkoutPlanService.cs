@@ -49,7 +49,8 @@ public class WorkoutPlanService : IWorkoutPlanService
             id: workoutPlanId,
             name: workoutPlanName,
             workoutsViewModel: workoutPlanWorkoutsEntity
-                .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.RestBetweenSets, w.Notes)))
+                .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax,
+                    w.RestBetweenSets, w.Notes)))
                 .ToList());
 
         return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutPlanViewModel);

@@ -1,9 +1,8 @@
 using FitSync.Application.Mappers;
-using FitSync.Domain.Dtos;
 using FitSync.Domain.Features.Users;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Responses;
-using FitSync.Domain.ViewModels;
+using FitSync.Domain.ViewModels.Users;
 using Microsoft.Extensions.Logging;
 
 namespace FitSync.Application.Services;
@@ -31,7 +30,7 @@ public class UserService : IUserService
         return ServiceResponse<int>.SuccessResult(userEntity.Id);
     }
 
-    public async Task<ServiceResponse<UserDto>> GetUserByIdAsync(int id)
+    public async Task<ServiceResponse<UserViewModel>> GetUserByIdAsync(int id)
     {
         _logger.LogInformation("Getting user by id: {Id}", id);
 
@@ -40,15 +39,14 @@ public class UserService : IUserService
         if (userEntity is null)
         {
             _logger.LogWarning("User not found with id: {Id}", id);
-            return ServiceResponse<UserDto>.FailureResult("User not found");
+            return ServiceResponse<UserViewModel>.FailureResult("User not found");
         }
 
-        return ServiceResponse<UserDto>.SuccessResult(userEntity.ToDto());
+        return ServiceResponse<UserViewModel>.SuccessResult(userEntity.ToViewModel());
     }
 
-    public async Task<ServiceResponse<UserViewModel>> GetUserByIdIncludeAllAsync(int id)
+    public async Task<ServiceResponse<UserViewModelIncluded>> GetUserByIdIncludeAllAsync(int id)
     {
-        //TODO: implement proper view model
         _logger.LogInformation("Getting user by id: {Id} including all related data", id);
 
         var userEntity = await _fitSyncUnitOfWork.UserRepository.GetUserByIdIncludeAllAsync(id);
@@ -56,14 +54,11 @@ public class UserService : IUserService
         if (userEntity is null)
         {
             _logger.LogWarning("User not found with id: {Id}", id);
-            return ServiceResponse<UserViewModel>.FailureResult("User not found");
+            return ServiceResponse<UserViewModelIncluded>.FailureResult("User not found");
         }
 
+        var userViewModelIncluded = userEntity.ToViewModelIncluded();
 
-        var userViewModel = new UserViewModel(userEntity.Name, userEntity.Age, userEntity.Genre);
-
-        return ServiceResponse<UserViewModel>.SuccessResult(userViewModel);
+        return ServiceResponse<UserViewModelIncluded>.SuccessResult(userViewModelIncluded);
     }
-
-    //TODO: Implement other methods
 }
