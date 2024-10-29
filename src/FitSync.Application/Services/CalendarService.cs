@@ -1,3 +1,4 @@
+using FitSync.Application.Extensions;
 using FitSync.Domain.Dtos;
 using FitSync.Domain.Interfaces;
 using Ical.Net;
@@ -41,7 +42,7 @@ public class CalendarService : ICalendarService
                 Transparency = TransparencyType.Transparent,
                 RecurrenceRules = new List<RecurrencePattern> { rrule },
                 Summary =  workoutPlan.Value.First()?.Name, // Calendar event title
-                Description = null,
+                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value), // Calendar event description
                 IsAllDay = true,
             };
 
