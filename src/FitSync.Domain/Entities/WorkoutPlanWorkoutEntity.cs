@@ -6,7 +6,6 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
 
     private WorkoutPlanWorkoutEntity(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
     {
-        WorkoutId = workoutId;
         Sets = sets;
         RepsMin = repsMin;
         RepsMax = repsMax;
@@ -37,8 +36,13 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
         return new WorkoutPlanWorkoutEntity(workoutId, sets, repsMin, repsMax, restBetweenSets, notes);
     }
 
-    public static WorkoutPlanWorkoutEntity Create(int workoutId)
+    public void Update(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
     {
-        return new WorkoutPlanWorkoutEntity(workoutId);
+        WorkoutId = workoutId;
+        Sets = sets;
+        RepsMin = repsMin;
+        RepsMax = repsMax;
+        RestBetweenSets = restBetweenSets;
+        Notes = notes;
     }
 }

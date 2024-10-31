@@ -12,4 +12,9 @@ public class WorkoutPlanEntity : TrackableEntity
 
     // Navigation property for many-to-many relationship
     public virtual ICollection<WorkoutPlanWorkoutEntity> WorkoutPlanWorkoutEntities { get; set; } = new List<WorkoutPlanWorkoutEntity>();
+
+    public void Update(string name)
+    {
+        Name = name;
+    }
 }
