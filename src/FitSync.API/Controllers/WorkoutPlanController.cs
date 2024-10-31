@@ -1,8 +1,8 @@
+using FitSync.Domain.Dtos.WorkoutPlans;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.ViewModels.WorkoutPlans;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using AddWorkoutPlanDto = FitSync.Domain.Dtos.WorkoutPlans.AddWorkoutPlanDto;
 
 namespace FitSync.API.Controllers;
 
@@ -62,5 +62,34 @@ public class WorkoutPlanController : ControllerBase
         return serviceResponse.Success
             ? CreatedAtRoute(nameof(GetWorkoutPlanByIdAsync), routeValues, createdResource)
             : BadRequest(serviceResponse.ErrorMessage);
+    }
+
+    [HttpPut]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    public async Task<IActionResult> UpdateWorkoutPlanAsync([FromBody] UpdateWorkoutPlanDto updateWorkoutPlanDto)
+    {
+        _logger.LogInformation("Updating workout plan");
+
+        var serviceResponse = await _workoutPlanService.UpdateWorkPlanAsync(updateWorkoutPlanDto);
+
+        return serviceResponse.Success
+            ? NoContent()
+            : BadRequest(serviceResponse.ErrorMessage);
+    }
+
+    [HttpDelete("{id}")]
+    [SwaggerOperation("Delete Workout Plan")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan deleted")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    public async Task<IActionResult> DeleteWorkoutPlanAsync(int id)
+    {
+        _logger.LogInformation("Deleting workout plan by id: {id}", id);
+        var serviceResponse = await _workoutPlanService.DeleteWorkPlanAsync(id);
+
+        return serviceResponse.Success
+            ? NoContent()
+            : NotFound();
     }
 }

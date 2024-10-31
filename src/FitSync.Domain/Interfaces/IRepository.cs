@@ -7,5 +7,7 @@ public interface IRepository<TEntity> : IReadOnlyRepository<TEntity> where TEnti
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task AddAsync(IEnumerator<TEntity> entities, CancellationToken cancellationToken = default);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task UpdateRangeAsync(IReadOnlyCollection<TEntity> entities, CancellationToken cancellationToken = default);
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task DeleteRangeAsync(IReadOnlyCollection<TEntity> entities, CancellationToken cancellationToken = default);
 }
