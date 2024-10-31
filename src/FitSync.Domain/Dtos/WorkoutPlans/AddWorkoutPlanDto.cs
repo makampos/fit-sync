@@ -1,7 +1,13 @@
 namespace FitSync.Domain.Dtos.WorkoutPlans;
 
 
-public record AddWorkoutPlanDto(int UserId, string Name, IDictionary<int, ExerciseSet> Workouts);
+public record AddWorkoutPlanDto(int UserId, string Name, IDictionary<int, ExerciseSet> Workouts)
+{
+    public static AddWorkoutPlanDto Create(int userId, string name, IDictionary<int, ExerciseSet> workouts)
+    {
+        return new AddWorkoutPlanDto(userId, name, workouts);
+    }
+}
 
 public record ExerciseSet(
     int Sets,

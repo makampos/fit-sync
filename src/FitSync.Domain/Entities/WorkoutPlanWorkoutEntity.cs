@@ -6,6 +6,7 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
 
     private WorkoutPlanWorkoutEntity(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
     {
+        WorkoutId = workoutId;
         Sets = sets;
         RepsMin = repsMin;
         RepsMax = repsMax;

@@ -6,7 +6,6 @@ using FitSync.Domain.Enums;
 using FitSync.Domain.ViewModels.Users;
 using FitSync.Domain.ViewModels.WorkoutPlans;
 using FitSync.Domain.ViewModels.Workouts;
-using AddWorkoutPlanDto = FitSync.Domain.Dtos.WorkoutPlans.AddWorkoutPlanDto;
 
 namespace FitSync.Application.Extensions;
 
