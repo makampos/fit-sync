@@ -22,11 +22,11 @@ jobs:
           title: "Automated Pull Request"
           body: "This pull request was created automatically."
           base: main  # Base branch for the PR
-          branch: ${{ github.ref }}  # Use the pushed branch as the PR branch
+          branch: ${{ github.head_ref || github.ref_name }}  # Use the pushed branch as the PR branch
 
   run-tests:
     runs-on: ubuntu-latest
-    needs: create-pr  # This job depends on the create-pr job
+#    needs: create-pr  # This job depends on the create-pr job
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
