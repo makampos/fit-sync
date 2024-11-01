@@ -1,0 +1,45 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - '**'  # Triggers on push to any branch
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
+          title: "Automated Pull Request"
+          body: "This pull request was created automatically."
+          base: main  # Base branch for the PR
+          branch: ${{ github.ref }}  # Use the pushed branch as the PR branch
+
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: create-pr  # This job depends on the create-pr job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore FitSync.sln
+
+      - name: Run Unit Tests
+        run: dotnet test FitSync.UnitTests/FitSync.UnitTests.csproj --no-build --verbosity normal
