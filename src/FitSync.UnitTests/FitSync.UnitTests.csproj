@@ -14,7 +14,6 @@
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="FluentAssertions" Version="6.12.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
         <PackageReference Include="xunit" Version="2.5.3"/>
@@ -28,6 +27,7 @@
     <ItemGroup>
       <ProjectReference Include="..\FitSync.Application\FitSync.Application.csproj" />
       <ProjectReference Include="..\FitSync.Domain\FitSync.Domain.csproj" />
+      <ProjectReference Include="..\FitSync.Infrastructure\FitSync.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
