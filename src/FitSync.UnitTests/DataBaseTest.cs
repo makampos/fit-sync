@@ -47,7 +47,7 @@ public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
 
     protected TInstance CreateInstance<TInstance>()
     {
-        return (TInstance)Activator.CreateInstance(typeof(TInstance), _logger, _fitSyncUnitOfWork);
+        return (TInstance)Activator.CreateInstance(typeof(TInstance), _logger, _fitSyncUnitOfWork)!;
     }
 
     private void ReleaseUnmanagedResources()

@@ -9,10 +9,9 @@ namespace FitSync.Application.Services;
 
 public class UserService : IUserService
 {
-    private readonly IFitSyncUnitOfWork _fitSyncUnitOfWork;
     private readonly ILogger<UserService> _logger;
-
-    public UserService(IFitSyncUnitOfWork fitSyncUnitOfWork, ILogger<UserService> logger)
+    private readonly IFitSyncUnitOfWork _fitSyncUnitOfWork;
+    public UserService(ILogger<UserService> logger, IFitSyncUnitOfWork fitSyncUnitOfWork)
     {
         _fitSyncUnitOfWork = fitSyncUnitOfWork;
         _logger = logger;
