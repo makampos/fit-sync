@@ -7,7 +7,7 @@ using FitSync.Domain.Dtos.Workouts;
 using FitSync.Domain.Enums;
 using FluentAssertions;
 
-namespace FitSyncUnitTests;
+namespace FitSync.UnitTests;
 
 public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
 {

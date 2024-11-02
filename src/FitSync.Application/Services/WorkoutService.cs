@@ -11,10 +11,9 @@ namespace FitSync.Application.Services;
 
 public class WorkoutService : IWorkoutService
 {
-    private readonly IFitSyncUnitOfWork _fitSyncUnitOfWork;
     private readonly ILogger<WorkoutService> _logger;
-
-    public WorkoutService(IFitSyncUnitOfWork fitSyncUnitOfWork, ILogger<WorkoutService> logger)
+    private readonly IFitSyncUnitOfWork _fitSyncUnitOfWork;
+    public WorkoutService(ILogger<WorkoutService> logger, IFitSyncUnitOfWork fitSyncUnitOfWork)
     {
         _fitSyncUnitOfWork = fitSyncUnitOfWork;
         _logger = logger;

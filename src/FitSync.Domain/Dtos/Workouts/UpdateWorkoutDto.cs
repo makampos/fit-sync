@@ -9,4 +9,11 @@ public record UpdateWorkoutDto(
     WorkoutType Type,
     string BodyPart,
     string Equipment,
-    WorkoutLevel Level);
+    WorkoutLevel Level)
+{
+    public static UpdateWorkoutDto Create(int id, string title, string description, WorkoutType type, string bodyPart,
+        string equipment, WorkoutLevel level)
+    {
+        return new UpdateWorkoutDto(id, title, description, type, bodyPart, equipment, level);
+    }
+}
