@@ -5,7 +5,7 @@ using FitSync.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FitSyncUnitTests;
+namespace FitSync.UnitTests;
 
 public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
 {

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.Application", "FitS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.API", "FitSync.API\FitSync.API.csproj", "{01F17D20-3D2E-4CC4-A418-5AC4C5306FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSyncUnitTests", "FitSyncUnitTests\FitSyncUnitTests.csproj", "{3C0792E7-2263-4C4D-B532-8AC7C2E1327A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitSync.UnitTests", "FitSync.UnitTests\FitSync.UnitTests.csproj", "{3C0792E7-2263-4C4D-B532-8AC7C2E1327A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
