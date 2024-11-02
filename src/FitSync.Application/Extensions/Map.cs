@@ -60,6 +60,7 @@ public static class Map
     public static UserViewModel ToViewModel(this UserEntity userEntity)
     {
         return UserViewModel.Create(
+            userEntity.Id,
             userEntity.Name,
             userEntity.Age,
             userEntity.Genre);
