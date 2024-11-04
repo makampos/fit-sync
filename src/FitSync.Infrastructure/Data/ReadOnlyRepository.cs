@@ -26,7 +26,7 @@ public class ReadOnlyRepository<TEntity>(
         return  new PagedResult<TEntity>(items, totalCount, pageSize, pageNumber);
     }
 
-    //TODO: Move to a more specific repository
+    //TODO: Move to a more specific repository and Apply the Specification pattern
     public async Task<PagedResult<WorkoutEntity>> GetFilteredWorkoutsAsync(
         WorkoutType? type = null,
         string? bodyPart = null,
@@ -45,12 +45,12 @@ public class ReadOnlyRepository<TEntity>(
 
         if (!string.IsNullOrEmpty(bodyPart))
         {
-            query = query.Where(w => w.BodyPart.Equals(bodyPart, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(w => EF.Functions.ILike(w.BodyPart, bodyPart));
         }
 
         if (!string.IsNullOrEmpty(equipment))
         {
-            query = query.Where(w => w.Equipment.Equals(equipment, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(w => EF.Functions.ILike(w.Equipment, equipment));
         }
 
         if (level.HasValue)

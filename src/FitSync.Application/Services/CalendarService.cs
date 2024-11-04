@@ -32,7 +32,10 @@ public class CalendarService : ICalendarService
                 ByDay = new List<WeekDay> { new WeekDay((DayOfWeek)workoutPlan.Key) }, // Day of the week
                 // Interval = 1,
                 // Count = 1,
-                Until = new DateTime(addWorkoutPlanCalendarEventsDto.Until.Year, addWorkoutPlanCalendarEventsDto.Until.Month, addWorkoutPlanCalendarEventsDto.Until.Day) // end recurrence on 30th November 2024
+                Until = new DateTime(
+                    addWorkoutPlanCalendarEventsDto.Until.Year,
+                    addWorkoutPlanCalendarEventsDto.Until.Month,
+                    addWorkoutPlanCalendarEventsDto.Until.Day) // end recurrence on 30th November 2024
             };
 
             var calendarEvent = new CalendarEvent()
@@ -41,8 +44,8 @@ public class CalendarService : ICalendarService
                 // End = new CalDateTime(),
                 Transparency = TransparencyType.Transparent,
                 RecurrenceRules = new List<RecurrencePattern> { rrule },
-                Summary =  workoutPlan.Value.First()?.Name, // Calendar event title
-                Description = WorkoutAggregator.AggregateWorkouts(workoutPlan.Value), // Calendar event description
+                Summary =  WorkoutAggregator.Title(workoutPlan.Value), // Calendar event title
+                Description = WorkoutAggregator.Workouts(workoutPlan.Value), // Calendar event description
                 IsAllDay = true,
             };
 
@@ -52,6 +55,6 @@ public class CalendarService : ICalendarService
         var serializer = new CalendarSerializer();
         var serializedCalendar = serializer.SerializeToString(calendar);
 
-        return  Task.FromResult(serializedCalendar);
+        return Task.FromResult(serializedCalendar);
     }
 }
