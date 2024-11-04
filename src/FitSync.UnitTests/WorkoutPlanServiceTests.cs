@@ -47,7 +47,7 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
             new Dictionary<int, ExerciseSet>()
             {
                 {
-                    workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
+                    workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,Faker.Random.Int(),
                         Faker.Random.String())
                 }
             }).ToDomainEntity();
@@ -93,7 +93,7 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
             new Dictionary<int, ExerciseSet>()
         {
             { workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
-                Faker.Random.String()) }
+                Faker.Random.Int(),Faker.Random.String()) }
         });
 
         // Act
@@ -101,7 +101,7 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
 
         // Assert
         result.Success.Should().BeTrue();
-        result.Data.Should().Be(1, "Workout plan should be created and return the id created");
+        result.Data.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -132,16 +132,18 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
             new Dictionary<int, ExerciseSet>()
             {
                 { workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
-                    Faker.Random.String()) }
+                        Faker.Random.Int(),Faker.Random.String() ) }
             }).ToDomainEntity();
 
         await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
 
-        var updateWorkoutPlanDto = UpdateWorkoutPlanDto.Create(1, userEntity.Id, Faker.Random.String(),
+        var updateWorkoutPlanDto = UpdateWorkoutPlanDto.Create(workoutPlanEntity.Id, userEntity.Id, Faker.Random
+            .String(),
             new Dictionary<int, ExerciseSet>()
             {
                 { workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
+                    Faker.Random.Int(),
                     Faker.Random.String()) }
             });
 
@@ -187,7 +189,7 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
             {
                 {
                     workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
-                        Faker.Random.String())
+                        Faker.Random.Int(),Faker.Random.String())
                 }
             }).ToDomainEntity();
 

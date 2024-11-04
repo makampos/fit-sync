@@ -4,12 +4,14 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
 {
     public WorkoutPlanWorkoutEntity(){ }
 
-    private WorkoutPlanWorkoutEntity(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
+    private WorkoutPlanWorkoutEntity(int workoutId, int sets, int repsMin, int repsMax, int weight, int restBetweenSets,
+            string? notes)
     {
         WorkoutId = workoutId;
         Sets = sets;
         RepsMin = repsMin;
         RepsMax = repsMax;
+        Weight = weight;
         RestBetweenSets = restBetweenSets;
         Notes = notes;
     }
@@ -25,6 +27,7 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
     public int Sets { get; private set; }
     public int RepsMin { get; private set; }
     public int RepsMax { get; private set; }
+    public int Weight { get; private set; }
     public int RestBetweenSets { get; private set; }
     public string? Notes { get; private set; }
 
@@ -32,17 +35,19 @@ public class WorkoutPlanWorkoutEntity : TrackableEntity
     public virtual WorkoutPlanEntity WorkoutPlan { get; set; }
     public virtual WorkoutEntity Workout { get; set; }
 
-    public static WorkoutPlanWorkoutEntity Create(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
+    public static WorkoutPlanWorkoutEntity Create(int workoutId, int sets, int repsMin, int repsMax, int weight, int
+            restBetweenSets, string? notes)
     {
-        return new WorkoutPlanWorkoutEntity(workoutId, sets, repsMin, repsMax, restBetweenSets, notes);
+        return new WorkoutPlanWorkoutEntity(workoutId, sets, repsMin, repsMax, weight, restBetweenSets, notes);
     }
 
-    public void Update(int workoutId, int sets, int repsMin, int repsMax, int restBetweenSets, string? notes)
+    public void Update(int workoutId, int sets, int repsMin, int repsMax, int weight, int restBetweenSets, string? notes)
     {
         WorkoutId = workoutId;
         Sets = sets;
         RepsMin = repsMin;
         RepsMax = repsMax;
+        Weight = weight;
         RestBetweenSets = restBetweenSets;
         Notes = notes;
     }

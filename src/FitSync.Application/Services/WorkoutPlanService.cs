@@ -39,7 +39,7 @@ public class WorkoutPlanService : IWorkoutPlanService
             name: workoutPlanName,
             workoutWithExercisesSetViewModel: workoutPlanWorkoutsEntity
                 .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax,
-                    w.RestBetweenSets, w.Notes)))
+                    w.Weight, w.RestBetweenSets, w.Notes)))
                 .ToList());
 
         return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutPlanViewModel);
@@ -62,7 +62,7 @@ public class WorkoutPlanService : IWorkoutPlanService
                 name: x.Name,
                 workoutWithExercisesSetViewModel: x.WorkoutPlanWorkoutEntities
                     .Select(w =>
-                        w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.RestBetweenSets,
+                        w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.Weight, w.RestBetweenSets,
                             w.Notes)))
                     .ToList()));
 
@@ -99,6 +99,7 @@ public class WorkoutPlanService : IWorkoutPlanService
                 updateWorkoutPlanDto.Workouts[item.WorkoutId].Sets,
                 updateWorkoutPlanDto.Workouts[item.WorkoutId].RepsMin,
                 updateWorkoutPlanDto.Workouts[item.WorkoutId].RepsMax,
+                updateWorkoutPlanDto.Workouts[item.WorkoutId].Weight,
                 updateWorkoutPlanDto.Workouts[item.WorkoutId].RestBetweenSets,
                 updateWorkoutPlanDto.Workouts[item.WorkoutId].Notes);
         }

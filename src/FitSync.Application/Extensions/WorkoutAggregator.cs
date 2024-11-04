@@ -24,8 +24,9 @@ public static class WorkoutAggregator
                 builder.AppendLine();
                 builder.AppendLine("Level: " + workout.Level);
                 builder.AppendLine("Body Part: " + workout.BodyPart);
-                builder.AppendLine("Equipment: " + workout.Equipment);
+                builder.AppendLine("Equipment: " + workout.Equipment); // Determine the unit of measurement on the front end based on user settings
                 builder.AppendLine("Type: " + workout.Type);
+                builder.AppendLine("Weight: " + workout.ExerciseSet.Weight);
                 builder.AppendLine("Sets: " + workout.ExerciseSet.Sets + " * " + $"({workout.ExerciseSet.RepsMin + " ~ " + workout.ExerciseSet.RepsMax}) / {workout.ExerciseSet.RestBetweenSets} seconds");
                 builder.AppendLine("Notes: " + workout.ExerciseSet.Notes);
             }
