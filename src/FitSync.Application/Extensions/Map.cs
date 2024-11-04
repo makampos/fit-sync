@@ -108,13 +108,14 @@ public static class Map
         {
             Name = addWorkoutPlanDto.Name,
             UserId = addWorkoutPlanDto.UserId,
-            WorkoutPlanWorkoutEntities = addWorkoutPlanDto.Workouts
+            WorkoutPlanWorkoutEntities = addWorkoutPlanDto.WorkoutIdToExerciseSet
                 .Select(w =>
                     WorkoutPlanWorkoutEntity.Create(
                     w.Key,
                     w.Value.Sets,
                     w.Value.RepsMin,
                     w.Value.RepsMax,
+                    w.Value.Weight,
                     w.Value.RestBetweenSets,
                     w.Value.Notes))
                 .ToList()
@@ -132,6 +133,7 @@ public static class Map
                         w.Sets,
                         w.RepsMin,
                         w.RepsMax,
+                        w.Weight,
                         w.RestBetweenSets,
                         w.Notes)))
                 .ToList());

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FitSync.UnitTests;
 
-public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
+public abstract class DataBaseTest<T> : IDisposable, IAsyncDisposable where T : class
 {
     protected Faker Faker => new();
     private readonly ILogger<T> _logger;
@@ -40,9 +40,6 @@ public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
             _userRepository,
             _workoutPlanRepository,
             _workoutPlanWorkoutRepository);
-
-        _fitSyncDbContext.Database.EnsureDeleted(); // Avoid flaky tests
-        _fitSyncDbContext.Database.EnsureCreated();
     }
 
     protected TInstance CreateInstance<TInstance>()
@@ -56,17 +53,16 @@ public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
 
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         ReleaseUnmanagedResources();
         if (disposing)
         {
-            _fitSyncDbContext.Database.EnsureDeleted();
             _fitSyncDbContext.Dispose();
         }
     }
 
-    protected virtual async ValueTask DisposeAsyncCore()
+    private async ValueTask DisposeAsyncCore()
     {
         ReleaseUnmanagedResources();
 
@@ -82,5 +78,11 @@ public abstract class DataBaseTest<T> : IAsyncDisposable where T : class
     ~DataBaseTest()
     {
         Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

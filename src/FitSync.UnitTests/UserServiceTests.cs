@@ -68,6 +68,7 @@ public class UserServiceTests : DataBaseTest<UserService>
                         Faker.Random.Int(),
                         Faker.Random.Int(),
                         Faker.Random.Int(),
+                            Faker.Random.Int(),
                         Faker.Random.String())
                     }
                 }).ToDomainEntity();

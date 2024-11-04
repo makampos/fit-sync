@@ -112,6 +112,10 @@ public class FitSyncDbContext : DbContext
             .HasColumnType("int");
 
         modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
+            .Property(wpw => wpw.Weight)
+            .HasColumnType("int");
+
+        modelBuilder.Entity<WorkoutPlanWorkoutEntity>()
             .Property(wpw => wpw.RestBetweenSets)
             .HasColumnType("int");
 
