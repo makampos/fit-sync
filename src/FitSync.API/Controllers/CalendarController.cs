@@ -30,7 +30,7 @@ public class CalendarController : ControllerBase
 
         var fileBytes = Encoding.UTF8.GetBytes(content);
 
-        var file =  File(fileBytes, "text/calendar", $"{nameof(addWorkoutPlanCalendarEventsDto)}.ics");
+        var file = File(fileBytes, "text/calendar", $"{nameof(addWorkoutPlanCalendarEventsDto)}.ics");
 
         return file;
     }

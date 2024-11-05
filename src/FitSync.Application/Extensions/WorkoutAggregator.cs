@@ -5,7 +5,7 @@ namespace FitSync.Application.Extensions;
 
 public static class WorkoutAggregator
 {
-    public static string AggregateWorkouts(IReadOnlyCollection<WorkoutPlanViewModel> workoutPlanViewModels)
+    public static string Workouts(IReadOnlyCollection<WorkoutPlanViewModel> workoutPlanViewModels)
     {
         if (!workoutPlanViewModels.Any())
         {
@@ -29,6 +29,31 @@ public static class WorkoutAggregator
                 builder.AppendLine("Weight: " + workout.ExerciseSet.Weight);
                 builder.AppendLine("Sets: " + workout.ExerciseSet.Sets + " * " + $"({workout.ExerciseSet.RepsMin + " ~ " + workout.ExerciseSet.RepsMax}) / {workout.ExerciseSet.RestBetweenSets} seconds");
                 builder.AppendLine("Notes: " + workout.ExerciseSet.Notes);
+            }
+        }
+
+        return builder.ToString();
+    }
+
+    public static string Title(IReadOnlyCollection<WorkoutPlanViewModel> workoutPlanViewModels)
+    {
+        if (!workoutPlanViewModels.Any())
+        {
+            return string.Empty;
+        }
+
+        var builder = new StringBuilder();
+
+        foreach (var workoutPlanVm in workoutPlanViewModels)
+        {
+            if (workoutPlanViewModels.Count > 1)
+            {
+                builder.AppendLine(workoutPlanVm.Name);
+                builder.AppendLine(" / ");
+            }
+            else
+            {
+                builder.AppendLine(workoutPlanVm.Name);
             }
         }
 
