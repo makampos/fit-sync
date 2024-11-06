@@ -1,3 +1,4 @@
+using FitSync.API.Responses;
 using FitSync.Domain.Dtos.WorkoutPlans;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.ViewModels.WorkoutPlans;
@@ -19,7 +20,7 @@ public class WorkoutPlanController : ControllerBase
         _workoutPlanService = workoutPlanService;
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("users/{userId}")]
     [SwaggerOperation("Get Workout Plan by User Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
@@ -56,11 +57,10 @@ public class WorkoutPlanController : ControllerBase
 
         var serviceResponse = await _workoutPlanService.CreateWorkPlanAsync(addWorkoutPlanDto);
 
-        var createdResource = new { Id = serviceResponse.Data, Version = "1.0" };
-        var routeValues = new { id = createdResource.Id, version = createdResource.Version };
+        var resource = Resource.Create(serviceResponse.Data);
 
         return serviceResponse.Success
-            ? CreatedAtRoute(nameof(GetWorkoutPlanByIdAsync), routeValues, createdResource)
+            ? CreatedAtRoute(nameof(GetWorkoutPlanByIdAsync), resource.GetRouteValues(), resource.GetCreatedResource())
             : BadRequest(serviceResponse.ErrorMessage);
     }
 
@@ -76,7 +76,11 @@ public class WorkoutPlanController : ControllerBase
 
         return serviceResponse.Success
             ? NoContent()
-            : BadRequest(serviceResponse.ErrorMessage);
+            : serviceResponse.ErrorMessage switch
+            {
+                "Workout plan not found" => NotFound(),
+                _ => BadRequest()
+            };
     }
 
     [HttpDelete("{id}")]

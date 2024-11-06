@@ -54,6 +54,7 @@ public static class Dependencies
 
     public static void MigrateDatabase(IServiceProvider serviceProvider)
     {
+       // TODO: add Environment variable to check if we are in production / local
         using var scope = serviceProvider.CreateScope();
         var services = scope.ServiceProvider;
         try

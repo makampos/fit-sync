@@ -5,7 +5,7 @@ using FitSync.Domain.Enums;
 namespace FitSync.Domain.ViewModels.Workouts;
 
 public record WorkoutWithExercisesSetViewModel(
-    int Id,
+    int WorkoutId,
     string Title,
     string Description,
     WorkoutType Type,
@@ -15,7 +15,7 @@ public record WorkoutWithExercisesSetViewModel(
     ExerciseSet ExerciseSet)
 {
     public static WorkoutWithExercisesSetViewModel Create(
-        int id,
+        int workoutId,
         string title,
         string description,
         WorkoutType type,
@@ -24,7 +24,7 @@ public record WorkoutWithExercisesSetViewModel(
         WorkoutLevel level,
         ExerciseSet exerciseSet)
     {
-        return new WorkoutWithExercisesSetViewModel(id, title, description, type, bodyPart, equipment, level, exerciseSet);
+        return new WorkoutWithExercisesSetViewModel(workoutId, title, description, type, bodyPart, equipment, level, exerciseSet);
     }
 
     public override string ToString()

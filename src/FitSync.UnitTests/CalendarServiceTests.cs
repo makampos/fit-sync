@@ -28,12 +28,12 @@ public class CalendarServiceTests
                 { 1, new List<WorkoutPlanViewModel>()
                     {
                         WorkoutPlanViewModel.Create(
-                            id: 1,
+                            workoutPlanId: 1,
                             name: "Workout Plan 1",
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 1,
+                                    workoutId: 1,
                                     title: "Workout 1",
                                     description: "Workout 1 description",
                                     type: WorkoutType.Cardio,
@@ -50,7 +50,7 @@ public class CalendarServiceTests
                                     )
                                 ),
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 2,
+                                    workoutId: 2,
                                     title: "Workout 2",
                                     description: "Workout 2 description",
                                     type: WorkoutType.Cardio,
@@ -67,7 +67,7 @@ public class CalendarServiceTests
                                     )
                                 ),
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 3,
+                                    workoutId: 3,
                                     title: "Workout 3",
                                     description: "Workout 3 description",
                                     type: WorkoutType.Cardio,
@@ -90,12 +90,12 @@ public class CalendarServiceTests
                 { 2, new List<WorkoutPlanViewModel>()
                     {
                         WorkoutPlanViewModel.Create(
-                            id: 2,
+                            workoutPlanId: 2,
                             name: "Workout Plan 2",
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 44,
+                                    workoutId: 44,
                                     title: "Workout 44",
                                     description: "Workout 44 description",
                                     type: WorkoutType.Cardio,
@@ -118,12 +118,12 @@ public class CalendarServiceTests
                 { 3, new List<WorkoutPlanViewModel>()
                     {
                         WorkoutPlanViewModel.Create(
-                            id: 3,
+                            workoutPlanId: 3,
                             name: "Workout Plan 3",
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 11,
+                                    workoutId: 11,
                                     title: "Workout 11",
                                     description: "Workout 11 description",
                                     type: WorkoutType.Cardio,
@@ -142,12 +142,12 @@ public class CalendarServiceTests
                             }
                         ),
                         WorkoutPlanViewModel.Create(
-                            id: 4,
+                            workoutPlanId: 4,
                             name: "Workout Plan 4",
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
-                                    id: 11,
+                                    workoutId: 11,
                                     title: "Workout 656",
                                     description: "Workout 656 description",
                                     type: WorkoutType.Cardio,

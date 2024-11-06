@@ -1,7 +1,9 @@
+using FitSync.API.Responses;
 using FitSync.Domain.Dtos.Workouts;
 using FitSync.Domain.Enums;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.Results;
+using FitSync.Domain.ViewModels.Workouts;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -23,7 +25,7 @@ public class WorkoutController : ControllerBase
 
     [HttpGet("{id}", Name = nameof(GetByIdAsync))]
     [SwaggerOperation("Get Workout by Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout found", typeof(AddWorkoutDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workout found", typeof(WorkoutViewModel))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout not found")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
@@ -37,7 +39,7 @@ public class WorkoutController : ControllerBase
 
     [HttpGet]
     [SwaggerOperation("Get All Workouts")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workouts", typeof(PagedResult<AddWorkoutDto>))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Workouts", typeof(PagedResult<WorkoutViewModel>))]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] WorkoutType? type = null,
         [FromQuery] string? bodyPart = null,
@@ -63,7 +65,9 @@ public class WorkoutController : ControllerBase
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(CreateAsync));
         var serviceResponse = await _workoutService.CreateAsync(addWorkoutDto);
 
-        return CreatedAtRoute(nameof(GetByIdAsync), new { serviceResponse.Data }, serviceResponse.Data);
+        var resource = Resource.Create(serviceResponse.Data);
+
+        return CreatedAtRoute(nameof(GetByIdAsync), resource.GetRouteValues(), resource.GetCreatedResource());
     }
 
     [HttpPut]
