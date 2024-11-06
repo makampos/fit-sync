@@ -13,7 +13,8 @@ public abstract class DatabaseTest : IAsyncLifetime
     protected HttpClient Client;
     protected readonly FitSyncDbContext DbContext;
     private readonly Func<Task> _resetDatabase;
-    public Fixture _fixture = new();
+
+    protected readonly Fixture Fixture = new();
 
     protected DatabaseTest(IntegrationTestFactory factory)
     {
@@ -28,7 +29,7 @@ public abstract class DatabaseTest : IAsyncLifetime
     /// <returns>UserId</returns>
     protected virtual async Task<int> CreateUserAsync()
     {
-        var userRequest = _fixture.Create<AddUserDto>();
+        var userRequest = Fixture.Create<AddUserDto>();
         var createUserResponse = await Client.PostAsJsonAsync("/api/users", userRequest);
         createUserResponse.EnsureSuccessStatusCode();
         return await createUserResponse.Content
@@ -42,7 +43,7 @@ public abstract class DatabaseTest : IAsyncLifetime
     /// <returns>WorkoutId</returns>
     protected virtual async Task<int> CreateWorkoutAsync()
     {
-        var workoutRequest = _fixture.Create<AddWorkoutDto>();
+        var workoutRequest = Fixture.Create<AddWorkoutDto>();
         var createWorkoutResponse = await Client.PostAsJsonAsync("/api/workouts", workoutRequest);
         createWorkoutResponse.EnsureSuccessStatusCode();
 
@@ -59,13 +60,13 @@ public abstract class DatabaseTest : IAsyncLifetime
     /// <returns>WorkoutPlanId</returns>
     protected virtual async Task<int> CreateWorkoutPlanAsync(int userId, int workoutId)
     {
-        var workoutPlanRequest = _fixture
+        var workoutPlanRequest = Fixture
             .Build<AddWorkoutPlanDto>()
             .With(x => x.UserId, userId)
             .With(x => x.WorkoutIdToExerciseSet,
                 new Dictionary<int, ExerciseSet>()
                 {
-                    { workoutId, _fixture.Create<ExerciseSet>() }
+                    { workoutId, Fixture.Create<ExerciseSet>() }
                 }).Create();
 
         var createWorkoutPlanResponse = await Client.PostAsJsonAsync("/api/workout-plans", workoutPlanRequest);

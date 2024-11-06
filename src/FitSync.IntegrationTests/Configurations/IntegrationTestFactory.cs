@@ -1,4 +1,5 @@
 using System.Data.Common;
+using DotNet.Testcontainers.Builders;
 using FitSync.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,15 +13,16 @@ namespace FitSync.IntegrationTests.Configurations;
 
 public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgreSqlContainer;
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithDatabase("FitSyncDb")
+        .WithUsername("admin")
+        .WithPassword("admin")
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+        .Build();
     public FitSyncDbContext FitSyncDbContext { get; private set; } = default!;
     private DbConnection _dbConnection = default!;
     private Respawner _respawner = default!;
-
-    public IntegrationTestFactory()
-    {
-        _postgreSqlContainer = new PostgreSqlBuilder().Build();
-    }
 
     public async Task InitializeAsync()
     {
@@ -37,16 +39,27 @@ public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLife
         });
     }
 
+    public new Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    protected override async void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            await _dbConnection.CloseAsync();
+            await _dbConnection.DisposeAsync();
+
+            await _postgreSqlContainer.StopAsync();
+            await _postgreSqlContainer.DisposeAsync();
+        }
+        base.Dispose(disposing);
+    }
+
     public async Task ResetDatabase()
     {
         await _respawner.ResetAsync(_dbConnection);
-    }
-
-    public new async Task DisposeAsync()
-    {
-        await base.DisposeAsync();
-        await _dbConnection.DisposeAsync();
-        await _postgreSqlContainer.DisposeAsync();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

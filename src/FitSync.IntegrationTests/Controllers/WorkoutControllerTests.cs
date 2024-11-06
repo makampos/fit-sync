@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using AutoFixture;
 using FitSync.API.Responses;
@@ -21,10 +22,10 @@ public class WorkoutControllerTests : DatabaseTest
     public WorkoutControllerTests(IntegrationTestFactory factory) : base(factory){ }
 
     [Fact]
-    public async Task CreateWorkout_ReturnsWorkout()
+    public async Task CreateWorkout_ReturnsCreated()
     {
         // Arrange
-        var request = _fixture.Create<AddWorkoutDto>();
+        var request = Fixture.Create<AddWorkoutDto>();
 
         // Act
         var response = await Client.PostAsJsonAsync("/api/workouts", request);
@@ -41,10 +42,10 @@ public class WorkoutControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutById_ReturnsWorkout()
+    public async Task GetWorkoutById_ReturnsOk()
     {
         // Arrange
-        var request = _fixture.Create<AddWorkoutDto>();
+        var request = Fixture.Create<AddWorkoutDto>();
         var createResponse = await Client.PostAsJsonAsync("/api/workouts", request);
         createResponse.EnsureSuccessStatusCode();
         var id = await createResponse.Content
@@ -68,10 +69,23 @@ public class WorkoutControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetAllWorkouts_ReturnsWorkouts()
+    public async Task GetWorkoutById_ReturnsNotFound()
     {
         // Arrange
-        var request = _fixture.Create<AddWorkoutDto>();
+        var id = 0;
+
+        // Act
+        var response = await Client.GetAsync($"/api/workouts/{id}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetAllWorkouts_ReturnsOk()
+    {
+        // Arrange
+        var request = Fixture.Create<AddWorkoutDto>();
         var createResponse = await Client.PostAsJsonAsync("/api/workouts", request);
         createResponse.EnsureSuccessStatusCode();
 
@@ -88,5 +102,67 @@ public class WorkoutControllerTests : DatabaseTest
         workouts.TotalPages.Should().Be(1);
         workouts.TotalCount.Should().BeGreaterOrEqualTo(1);
         workouts.Items.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task UpdateWorkout_ReturnsNoContent()
+    {
+        // Arrange
+        var id = await CreateWorkoutAsync();
+
+        var updateRequest = Fixture.Build<UpdateWorkoutDto>()
+            .With(x => x.Id, id)
+            .Create();
+
+        // Act
+        var response = await Client.PutAsJsonAsync($"/api/workouts", updateRequest);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task UpdateWorkout_ReturnsNotFound()
+    {
+        // Arrange
+        var id = 0;
+
+        var updateRequest = Fixture.Build<UpdateWorkoutDto>()
+            .With(x => x.Id, id)
+            .Create();
+
+        // Act
+        var response = await Client.PutAsJsonAsync($"/api/workouts", updateRequest);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteWorkout_ReturnsNoContent()
+    {
+        // Arrange
+        var id = await CreateWorkoutAsync();
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/workouts/{id}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task DeleteWorkout_ReturnsNotFound()
+    {
+        // Arrange
+        var id = 0;
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/workouts/{id}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

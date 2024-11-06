@@ -20,7 +20,7 @@ public class WorkoutPlanController : ControllerBase
         _workoutPlanService = workoutPlanService;
     }
 
-    [HttpGet("user/{userId}")]
+    [HttpGet("users/{userId}")]
     [SwaggerOperation("Get Workout Plan by User Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
@@ -76,7 +76,11 @@ public class WorkoutPlanController : ControllerBase
 
         return serviceResponse.Success
             ? NoContent()
-            : BadRequest(serviceResponse.ErrorMessage);
+            : serviceResponse.ErrorMessage switch
+            {
+                "Workout plan not found" => NotFound(),
+                _ => BadRequest()
+            };
     }
 
     [HttpDelete("{id}")]

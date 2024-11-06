@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using AutoFixture;
 using FitSync.API.Responses;
@@ -17,19 +18,19 @@ public class WorkoutPlanControllerTests : DatabaseTest
     public WorkoutPlanControllerTests(IntegrationTestFactory factory) : base(factory){ }
 
     [Fact]
-    public async Task CreateWorkoutPlan_ReturnsWorkoutPlanId()
+    public async Task CreateWorkoutPlan_ReturnsCreated()
     {
         // Arrange
         var userId = await CreateUserAsync();
         var workoutId = await CreateWorkoutAsync();
 
-        var request = _fixture
+        var request = Fixture
             .Build<AddWorkoutPlanDto>()
             .With(x => x.UserId, userId)
             .With(x => x.WorkoutIdToExerciseSet,
                 new Dictionary<int, ExerciseSet>()
                 {
-                    { workoutId, _fixture.Create<ExerciseSet>() }
+                    { workoutId, Fixture.Create<ExerciseSet>() }
                 }).Create();
 
         // Act
@@ -47,7 +48,7 @@ public class WorkoutPlanControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutPlanById_ReturnsWorkoutPlan()
+    public async Task GetWorkoutPlanById_ReturnsOk()
     {
         // Arrange
         var userId = await CreateUserAsync();
@@ -66,5 +67,125 @@ public class WorkoutPlanControllerTests : DatabaseTest
         workoutPlan!.WorkoutWithExercisesSetViewModel.Should()
             .Contain(x => x.WorkoutId == workoutId);
         workoutPlan.WorkoutPlanId.Should().Be(workoutPlanId);
+    }
+
+    [Fact]
+    public async Task GetWorkoutPlanById_ReturnsNotFound()
+    {
+        // Arrange
+        var id = 0;
+
+        // Act
+        var getWorkoutPlanResponse = await Client.GetAsync($"/api/workout-plans/{id}");
+
+        // Assert
+        getWorkoutPlanResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetWorkoutPlansByUserId_ReturnsOk()
+    {
+        // Arrange
+        var userId = await CreateUserAsync();
+        var workoutId = await CreateWorkoutAsync();
+
+        var workoutPlanId = await CreateWorkoutPlanAsync(userId, workoutId);
+
+        // Act
+        var getWorkoutPlansResponse = await Client.GetAsync($"/api/workout-plans/users/{userId}");
+
+        // Assert
+        getWorkoutPlansResponse.EnsureSuccessStatusCode();
+        var workoutPlans = await getWorkoutPlansResponse.Content.ReadFromJsonAsync<IEnumerable<WorkoutPlanViewModel>>();
+
+        workoutPlans.Should().NotBeEmpty();
+        workoutPlans.Should().Contain(x => x.WorkoutPlanId == workoutPlanId);
+    }
+
+    [Fact]
+    public async Task GetWorkoutPlansByUserId_ReturnsNotFound()
+    {
+        // Arrange
+        var id = 0;
+
+        // Act
+        var getWorkoutPlansResponse = await Client.GetAsync($"/api/workout-plans/users/{id}");
+
+        // Assert
+        getWorkoutPlansResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateWorkoutPlan_ReturnsNoContent()
+    {
+        // Arrange
+        var userId = await CreateUserAsync();
+        var workoutId = await CreateWorkoutAsync();
+
+        var workoutPlanId = await CreateWorkoutPlanAsync(userId, workoutId);
+
+        var updateRequest = Fixture.Build<UpdateWorkoutPlanDto>()
+            .With(x => x.Id, workoutPlanId)
+            .With(x => x.UserId, userId)
+            .With(x => x.Workouts,
+                new Dictionary<int, ExerciseSet>()
+                {
+                    { workoutId, Fixture.Create<ExerciseSet>() }
+                })
+            .Create();
+
+        // Act
+        var response = await Client.PutAsJsonAsync("/api/workout-plans", updateRequest);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task UpdateWorkoutPlan_ReturnsNotFound()
+    {
+        // Arrange
+        var workoutPlanId = 0;
+
+        var updateRequest = Fixture.Build<UpdateWorkoutPlanDto>()
+            .With(x => x.Id, workoutPlanId)
+            .Create();
+
+        // Act
+        var response = await Client.PutAsJsonAsync("/api/workout-plans", updateRequest);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteWorkoutPlan_ReturnsNoContent()
+    {
+        // Arrange
+        var userId = await CreateUserAsync();
+        var workoutId = await CreateWorkoutAsync();
+
+        var workoutPlanId = await CreateWorkoutPlanAsync(userId, workoutId);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/workout-plans/{workoutPlanId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task DeleteWorkoutPlan_ReturnsNotFound()
+    {
+        // Arrange
+        var workoutPlanId = 0;
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/workout-plans/{workoutPlanId}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
