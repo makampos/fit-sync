@@ -59,7 +59,7 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
         var result = await _workoutPlanService.GetWorkoutPlanByIdAsync(workoutPlanEntity.Id);
         result.Success.Should().BeTrue();
         result.Data.Should().NotBeNull();
-        result.Data!.Id.Should().Be(workoutPlanEntity.Id);
+        result.Data!.WorkoutPlanId.Should().Be(workoutPlanEntity.Id);
         result.Data.Name.Should().Be(workoutPlanEntity.Name);
         result.Data.WorkoutWithExercisesSetViewModel.Count.Should().Be(1);
     }

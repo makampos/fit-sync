@@ -33,7 +33,7 @@ public class WorkoutServiceTests : DataBaseTest<WorkoutService>
         // Assert
         result.Success.Should().BeTrue();
         result.Data.Should().NotBeNull();
-        result.Data.Id.Should().Be(workoutEntity.Id);
+        result.Data.WorkoutId.Should().Be(workoutEntity.Id);
     }
 
     [Fact]

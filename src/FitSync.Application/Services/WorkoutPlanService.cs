@@ -35,7 +35,7 @@ public class WorkoutPlanService : IWorkoutPlanService
         var workoutPlanName = workoutPlanWorkoutsEntity.First().WorkoutPlan.Name;
 
         var workoutPlanViewModel = WorkoutPlanViewModel.Create(
-            id: workoutPlanId,
+            workoutPlanId: workoutPlanId,
             name: workoutPlanName,
             workoutWithExercisesSetViewModel: workoutPlanWorkoutsEntity
                 .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax,
@@ -58,7 +58,7 @@ public class WorkoutPlanService : IWorkoutPlanService
 
         var workoutPlanViewModels = workoutPlanEntity
             .Select(x => WorkoutPlanViewModel.Create(
-                id: x.Id,
+                workoutPlanId: x.Id,
                 name: x.Name,
                 workoutWithExercisesSetViewModel: x.WorkoutPlanWorkoutEntities
                     .Select(w =>

@@ -1,3 +1,4 @@
+using FitSync.API.Responses;
 using FitSync.Domain.Dtos.Users;
 using FitSync.Domain.Interfaces;
 using FitSync.Domain.ViewModels.Users;
@@ -7,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace FitSync.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
@@ -53,12 +54,11 @@ public class UserController : ControllerBase
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(CreateUserAsync));
         var serviceResponse = await _userService.CreateUserAsync(addUserDto);
-
-        var createdResource = new { Id = serviceResponse.Data, Version = "1.0" };
-        var routeValues = new { id = createdResource.Id, version = createdResource.Version };
+        // TODO: Add a Resource class to handle the creation of the CreatedAtRoute response
+        var resource = Resource.Create(serviceResponse.Data);
 
         return serviceResponse.Success
-            ? CreatedAtRoute(nameof(GetUserByIdAsync), routeValues, createdResource)
+            ? CreatedAtRoute(nameof(GetUserByIdAsync), resource.GetRouteValues(), resource.GetCreatedResource())
             : BadRequest(serviceResponse.ErrorMessage);
     }
 }
