@@ -19,6 +19,109 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
     }
 
     [Fact]
+    public async Task GetWorkoutPlansByUserIdAsync_ShouldReturnWorkoutPlans()
+    {
+        // Arrange
+        var userEntity = AddUserDto.Create("Test", 25, Genre.Male).ToDomainEntity();
+
+        var workoutEntity = new Faker<AddWorkoutDto>()
+            .CustomInstantiator(w => new AddWorkoutDto(
+                Title: w.Random.String(),
+                Description: w.Random.String(),
+                Type: w.PickRandom<WorkoutType>(),
+                BodyPart: w.Random.String(),
+                Equipment: w.Random.String(),
+                Level: w.PickRandom<WorkoutLevel>()))
+            .Generate()
+            .ToDomainEntity();
+
+
+        await Task.WhenAll(
+            _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity),
+            _fitSyncUnitOfWork.WorkoutRepository.AddAsync(workoutEntity)
+        );
+
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        var workoutPlanEntity = AddWorkoutPlanDto.Create(userEntity.Id, Faker.Random.String(),
+            new Dictionary<int, ExerciseSet>()
+            {
+                {
+                    workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,Faker.Random.Int(),
+                        Faker.Random.String())
+                }
+            }).ToDomainEntity();
+
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntity);
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        // Act
+        var result = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userEntity.Id);
+
+        result.Success.Should().BeTrue();
+        result.Data.Should().NotBeNull();
+        result.Data!.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task GetWorkoutPlansByUserIdAsync_ShouldReturnOnlyActiveWorkoutPlans()
+    {
+        // Arrange
+        var userEntity = AddUserDto.Create("Test", 25, Genre.Male).ToDomainEntity();
+
+        var workoutEntity = new Faker<AddWorkoutDto>()
+            .CustomInstantiator(w => new AddWorkoutDto(
+                Title: w.Random.String(),
+                Description: w.Random.String(),
+                Type: w.PickRandom<WorkoutType>(),
+                BodyPart: w.Random.String(),
+                Equipment: w.Random.String(),
+                Level: w.PickRandom<WorkoutLevel>()))
+            .Generate()
+            .ToDomainEntity();
+
+
+        await Task.WhenAll(
+            _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity),
+            _fitSyncUnitOfWork.WorkoutRepository.AddAsync(workoutEntity)
+        );
+
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        var workoutPlanEntityA = AddWorkoutPlanDto.Create(userEntity.Id, Faker.Random.String(),
+            new Dictionary<int, ExerciseSet>()
+            {
+                {
+                    workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,Faker.Random.Int(),
+                        Faker.Random.String())
+                }
+            }).ToDomainEntity();
+
+        workoutPlanEntityA.ToggleIsActive(true);
+
+        var workoutPlanEntityB = AddWorkoutPlanDto.Create(userEntity.Id, Faker.Random.String(),
+            new Dictionary<int, ExerciseSet>()
+            {
+                {
+                    workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,Faker.Random.Int(),
+                        Faker.Random.String())
+                }
+            }).ToDomainEntity();
+
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntityA);
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntityB);
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        // Act
+        var result = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userEntity.Id,
+            true);
+
+        result.Success.Should().BeTrue();
+        result.Data.Should().NotBeNull();
+        result.Data!.Should().HaveCount(1);
+    }
+
+    [Fact]
     public async Task GetWorkPlanByIdAsync_ShouldReturnWorkPlan()
     {
         // Arrange

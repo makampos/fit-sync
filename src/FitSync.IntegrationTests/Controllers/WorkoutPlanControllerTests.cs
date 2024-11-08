@@ -83,7 +83,7 @@ public class WorkoutPlanControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutPlansByUserId_ReturnsOk()
+    public async Task GetWorkoutPlansByUserIdAsync_ReturnsOk()
     {
         // Arrange
         var userId = await CreateUserAsync();
@@ -103,7 +103,7 @@ public class WorkoutPlanControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutPlansByUserId_ReturnsNotFound()
+    public async Task GetWorkoutPlansByUserIdAsync_ReturnsNotFound()
     {
         // Arrange
         var id = 0;

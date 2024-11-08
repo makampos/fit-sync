@@ -13,5 +13,6 @@ public interface IWorkoutPlanService
         updateWorkoutPlanActiveOrInactiveDto);
     Task<ServiceResponse<bool>> DeleteWorkPlanAsync(int id);
     Task<ServiceResponse<WorkoutPlanViewModel>> GetWorkoutPlanByIdAsync(int id);
-    Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId);
+    Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId, bool? isActive
+        = null);
 }

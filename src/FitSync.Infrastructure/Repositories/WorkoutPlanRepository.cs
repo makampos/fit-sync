@@ -16,12 +16,19 @@ public class WorkoutPlanRepository(FitSyncDbContext fitSyncDbContext)
             .FirstOrDefaultAsync(wp => wp.Id == workoutPlanId);
     }
 
-    public async Task<IReadOnlyCollection<WorkoutPlanEntity>> GetWorkoutPlanIncludedWorkoutsByUserIdAsync(int userId)
+    public async Task<IReadOnlyCollection<WorkoutPlanEntity>> GetWorkoutPlanIncludedWorkoutsByUserIdAsync(int userId,
+        bool? isActive = null)
     {
-        return await SetAsTracking
+        var query = SetAsTracking
             .Include(wp => wp.WorkoutPlanWorkoutEntities)
             .ThenInclude(wp => wp.Workout)
-            .Where(x => x.UserId == userId)
-            .ToListAsync();
+            .Where(x => x.UserId == userId);
+
+        if (isActive.HasValue)
+        {
+            query = query.Where(x => x.IsActive == isActive.Value);
+        }
+
+        return await query.ToListAsync();
     }
 }

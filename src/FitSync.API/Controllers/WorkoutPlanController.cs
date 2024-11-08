@@ -24,11 +24,12 @@ public class WorkoutPlanController : ControllerBase
     [SwaggerOperation("Get Workout Plan by User Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
-    public async Task<IActionResult> GetWorkoutPlansByUserIdAsync([FromRoute] int userId)
+    public async Task<IActionResult> GetWorkoutPlansByUserIdAsync([FromRoute] int userId, [FromQuery] bool isActive =
+        false)
     {
-        // TODO: add query to filter by 'isActive' true/false
+        // TODO: add pagination support
         _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
-        var serviceResponse = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userId);
+        var serviceResponse = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userId, isActive);
 
         return serviceResponse.Success
             ? Ok(serviceResponse.Data)

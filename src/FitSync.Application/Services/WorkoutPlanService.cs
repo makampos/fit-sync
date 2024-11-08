@@ -48,11 +48,13 @@ public class WorkoutPlanService : IWorkoutPlanService
         return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutPlanViewModel);
     }
 
-    public async Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId)
+    public async Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId,
+        bool? isActive = null)
     {
         _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
 
-        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository.GetWorkoutPlanIncludedWorkoutsByUserIdAsync(userId);
+        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository
+            .GetWorkoutPlanIncludedWorkoutsByUserIdAsync(userId, isActive);
 
         if (!workoutPlanEntity.Any())
         {
