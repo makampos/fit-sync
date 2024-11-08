@@ -21,6 +21,7 @@ public class WorkoutPlanService : IWorkoutPlanService
 
     public async Task<ServiceResponse<WorkoutPlanViewModel>> GetWorkoutPlanByIdAsync(int id)
     {
+        //TODO: Revisited this to check if is right to filter (First)
         _logger.LogInformation("Getting workout plan by id: {id}", id);
 
         var workoutPlanWorkoutsEntity =
@@ -33,10 +34,12 @@ public class WorkoutPlanService : IWorkoutPlanService
 
         var workoutPlanId = workoutPlanWorkoutsEntity.First().WorkoutPlanId;
         var workoutPlanName = workoutPlanWorkoutsEntity.First().WorkoutPlan.Name;
+        var isWorkoutPlanActive = workoutPlanWorkoutsEntity.First().WorkoutPlan.IsActive;
 
         var workoutPlanViewModel = WorkoutPlanViewModel.Create(
             workoutPlanId: workoutPlanId,
             name: workoutPlanName,
+            isActive: isWorkoutPlanActive,
             workoutWithExercisesSetViewModel: workoutPlanWorkoutsEntity
                 .Select(w => w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax,
                     w.Weight, w.RestBetweenSets, w.Notes)))
@@ -45,11 +48,13 @@ public class WorkoutPlanService : IWorkoutPlanService
         return ServiceResponse<WorkoutPlanViewModel>.SuccessResult(workoutPlanViewModel);
     }
 
-    public async Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId)
+    public async Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId,
+        bool? isActive = null)
     {
         _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
 
-        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository.GetWorkoutPlanIncludedWorkoutsByUserIdAsync(userId);
+        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository
+            .GetWorkoutPlanIncludedWorkoutsByUserIdAsync(userId, isActive);
 
         if (!workoutPlanEntity.Any())
         {
@@ -60,6 +65,7 @@ public class WorkoutPlanService : IWorkoutPlanService
             .Select(x => WorkoutPlanViewModel.Create(
                 workoutPlanId: x.Id,
                 name: x.Name,
+                isActive: x.IsActive,
                 workoutWithExercisesSetViewModel: x.WorkoutPlanWorkoutEntities
                     .Select(w =>
                         w.Workout.ToViewModel(ExerciseSet.Create(w.Sets, w.RepsMin, w.RepsMax, w.Weight, w.RestBetweenSets,
@@ -111,6 +117,35 @@ public class WorkoutPlanService : IWorkoutPlanService
             _fitSyncUnitOfWork.WorkoutPlanRepository.UpdateAsync(workoutPlanEntity),
             _fitSyncUnitOfWork.WorkoutPlanWorkoutRepository.UpdateRangeAsync(workoutPlanWorkoutEntities));
 
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        return ServiceResponse<bool>.SuccessResult(true);
+    }
+
+    public async Task<ServiceResponse<bool>> ToggleWorkoutPlanActiveAsync(UpdateWorkoutPlanActiveOrInactiveDto
+        updateWorkoutPlanActiveOrInactiveDto)
+    {
+        _logger.LogInformation("Activating or deactivating workout plan with id {WorkoutPlanId}",
+            updateWorkoutPlanActiveOrInactiveDto.WorkoutPlanId);
+
+        var workoutPlanEntity = await _fitSyncUnitOfWork.WorkoutPlanRepository.GetByIdAsync
+            (updateWorkoutPlanActiveOrInactiveDto.WorkoutPlanId);
+
+        if (workoutPlanEntity is null)
+        {
+            _logger.LogWarning("Workout plan with id {id} not found", updateWorkoutPlanActiveOrInactiveDto.WorkoutPlanId);
+            return ServiceResponse<bool>.FailureResult("Workout plan not found");
+        }
+
+        if (workoutPlanEntity.IsActive == updateWorkoutPlanActiveOrInactiveDto.IsActive)
+        {
+           _logger.LogWarning("Can not update workout plan status, because it is already {IsActive}",
+               workoutPlanEntity.IsActive);
+           return ServiceResponse<bool>.FailureResult("Can not update workout plan status");
+        }
+
+        workoutPlanEntity.ToggleIsActive(updateWorkoutPlanActiveOrInactiveDto.IsActive);
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.UpdateAsync(workoutPlanEntity);
         await _fitSyncUnitOfWork.SaveChangesAsync();
 
         return ServiceResponse<bool>.SuccessResult(true);

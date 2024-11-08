@@ -5,5 +5,6 @@ namespace FitSync.Domain.Interfaces;
 public interface IWorkoutPlanRepository : IRepository<WorkoutPlanEntity>
 {
   Task<WorkoutPlanEntity?> GetWorkoutPlanIncludedWorkoutsAsync(int workoutPlanId);
-  Task<IReadOnlyCollection<WorkoutPlanEntity>> GetWorkoutPlanIncludedWorkoutsByUserIdAsync(int userId);
+  Task<IReadOnlyCollection<WorkoutPlanEntity>> GetWorkoutPlanIncludedWorkoutsByUserIdAsync(int userId, bool? isActive
+    = null);
 }

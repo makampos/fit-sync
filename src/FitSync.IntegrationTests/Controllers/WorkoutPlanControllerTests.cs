@@ -83,7 +83,7 @@ public class WorkoutPlanControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutPlansByUserId_ReturnsOk()
+    public async Task GetWorkoutPlansByUserIdAsync_ReturnsOk()
     {
         // Arrange
         var userId = await CreateUserAsync();
@@ -103,7 +103,7 @@ public class WorkoutPlanControllerTests : DatabaseTest
     }
 
     [Fact]
-    public async Task GetWorkoutPlansByUserId_ReturnsNotFound()
+    public async Task GetWorkoutPlansByUserIdAsync_ReturnsNotFound()
     {
         // Arrange
         var id = 0;
@@ -187,5 +187,53 @@ public class WorkoutPlanControllerTests : DatabaseTest
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ToggleWorkoutPlanActiveAsync_ShouldReturnNoContent()
+    {
+        // Arrange
+        var userId = await CreateUserAsync();
+        var workoutId = await CreateWorkoutAsync();
+
+        var workoutPlanId = await CreateWorkoutPlanAsync(userId, workoutId);
+
+        // Act
+        var response = await Client.PatchAsJsonAsync($"api/workout-plans/{workoutPlanId}/toggle-active", true);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task ToggleWorkoutPlanActiveAsync_ShouldReturnNotFound()
+    {
+        // Arrange
+        // Act
+        var response = await Client.PatchAsJsonAsync($"api/workout-plans/{0}/toggle-active", true);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ToggleWorkoutPlanActiveAsync_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var userId = await CreateUserAsync();
+        var workoutId = await CreateWorkoutAsync();
+
+        var workoutPlanId = await CreateWorkoutPlanAsync(userId, workoutId);
+        var status = false;
+
+        // Act
+        var response = await Client.PatchAsJsonAsync($"api/workout-plans/{workoutPlanId}/toggle-active", status);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        errorMessage.Should().Be("Can not update workout plan status",
+            because: "Because it is already {IsActive}", status);
     }
 }

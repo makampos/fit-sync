@@ -78,6 +78,10 @@ public class FitSyncDbContext : DbContext
             .HasKey(wp => wp.Id);
 
         modelBuilder.Entity<WorkoutPlanEntity>()
+            .Property(wp => wp.IsActive)
+            .HasColumnType("boolean");
+
+        modelBuilder.Entity<WorkoutPlanEntity>()
             .HasOne(wp => wp.User)
             .WithMany(u => u.WorkoutPlans)
             .HasForeignKey(wp => wp.UserId);

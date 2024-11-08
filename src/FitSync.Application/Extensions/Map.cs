@@ -127,6 +127,7 @@ public static class Map
         return WorkoutPlanViewModel.Create(
             workoutPlanEntity.Id,
             workoutPlanEntity.Name,
+            isActive: workoutPlanEntity.IsActive,
             workoutPlanEntity.WorkoutPlanWorkoutEntities
                 .Select(w => w.Workout
                     .ToViewModel(ExerciseSet.Create(
