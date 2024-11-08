@@ -20,12 +20,13 @@ public class WorkoutPlanController : ControllerBase
         _workoutPlanService = workoutPlanService;
     }
 
-    [HttpGet("users/{userId}")]
+    [HttpGet("users/{userId:int}")]
     [SwaggerOperation("Get Workout Plan by User Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
     public async Task<IActionResult> GetWorkoutPlansByUserIdAsync([FromRoute] int userId)
     {
+        // TODO: add query to filter by 'isActive' true/false
         _logger.LogInformation("Getting workout plan by user id: {userId}", userId);
         var serviceResponse = await _workoutPlanService.GetWorkoutPlansByUserIdAsync(userId);
 
@@ -34,11 +35,11 @@ public class WorkoutPlanController : ControllerBase
             : NotFound();
     }
 
-    [HttpGet("{id}", Name = nameof(GetWorkoutPlanByIdAsync))]
+    [HttpGet("{id:int}", Name = nameof(GetWorkoutPlanByIdAsync))]
     [SwaggerOperation("Get Workout Plan by Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanViewModel))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
-    public async Task<IActionResult> GetWorkoutPlanByIdAsync(int id)
+    public async Task<IActionResult> GetWorkoutPlanByIdAsync([FromRoute] int id)
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
         var serviceResponse = await _workoutPlanService.GetWorkoutPlanByIdAsync(id);
@@ -83,11 +84,35 @@ public class WorkoutPlanController : ControllerBase
             };
     }
 
-    [HttpDelete("{id}")]
+    [HttpPatch("{id:int}/toggle-active")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    public async Task<IActionResult> ToggleWorkoutPlanActiveAsync([FromRoute] int id, [FromBody] bool
+        isActive)
+    {
+        _logger.LogInformation("{controller} called within {action}", nameof(WorkoutPlanController),
+            nameof(ToggleWorkoutPlanActiveAsync));
+
+        var serviceResponse =
+            await _workoutPlanService.ToggleWorkoutPlanActiveAsync(UpdateWorkoutPlanActiveOrInactiveDto
+            .Create(id, isActive));
+
+        return serviceResponse.Success
+            ? NoContent()
+            : serviceResponse.ErrorMessage switch
+            {
+                "Workout plan not found" => NotFound(),
+                _ => BadRequest(serviceResponse.ErrorMessage)
+            };
+    }
+
+
+    [HttpDelete("{id:int}")]
     [SwaggerOperation("Delete Workout Plan")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan deleted")]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
-    public async Task<IActionResult> DeleteWorkoutPlanAsync(int id)
+    public async Task<IActionResult> DeleteWorkoutPlanAsync([FromRoute] int id)
     {
         _logger.LogInformation("Deleting workout plan by id: {id}", id);
         var serviceResponse = await _workoutPlanService.DeleteWorkPlanAsync(id);

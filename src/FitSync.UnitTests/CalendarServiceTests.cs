@@ -30,6 +30,7 @@ public class CalendarServiceTests
                         WorkoutPlanViewModel.Create(
                             workoutPlanId: 1,
                             name: "Workout Plan 1",
+                            isActive: false,
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
@@ -92,6 +93,7 @@ public class CalendarServiceTests
                         WorkoutPlanViewModel.Create(
                             workoutPlanId: 2,
                             name: "Workout Plan 2",
+                            isActive: false,
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
@@ -120,6 +122,7 @@ public class CalendarServiceTests
                         WorkoutPlanViewModel.Create(
                             workoutPlanId: 3,
                             name: "Workout Plan 3",
+                            isActive: false,
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(
@@ -144,6 +147,7 @@ public class CalendarServiceTests
                         WorkoutPlanViewModel.Create(
                             workoutPlanId: 4,
                             name: "Workout Plan 4",
+                            isActive: false,
                             workoutWithExercisesSetViewModel: new List<WorkoutWithExercisesSetViewModel>()
                             {
                                 WorkoutWithExercisesSetViewModel.Create(

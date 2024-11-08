@@ -207,4 +207,109 @@ public class WorkoutPlanServiceTests : DataBaseTest<WorkoutPlanService>
         var workoutPlan = await _fitSyncUnitOfWork.WorkoutPlanRepository.GetByIdAsync(workoutPlanEntity.Id);
         workoutPlan.Should().BeNull();
     }
+
+
+    [Fact]
+    public async Task UpdateWorkoutPlanIsActiveProperty_ShouldUpdateWorkoutPlan()
+    {
+        // Arrange
+        var userEntity = AddUserDto.Create("Test", 25, Genre.Male).ToDomainEntity();
+
+        var workoutEntity = new Faker<AddWorkoutDto>()
+            .CustomInstantiator(w => new AddWorkoutDto(
+                Title: w.Random.String(),
+                Description: w.Random.String(),
+                Type: w.PickRandom<WorkoutType>(),
+                BodyPart: w.Random.String(),
+                Equipment: w.Random.String(),
+                Level: w.PickRandom<WorkoutLevel>()))
+            .Generate()
+            .ToDomainEntity();
+
+        await Task.WhenAll(
+            _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity),
+            _fitSyncUnitOfWork.WorkoutRepository.AddAsync(workoutEntity)
+        );
+
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        var workoutPlanEntity = AddWorkoutPlanDto.Create(userEntity.Id, Faker.Random.String(),
+            new Dictionary<int, ExerciseSet>()
+            {
+                { workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
+                    Faker.Random.Int(),Faker.Random.String() ) }
+            }).ToDomainEntity();
+
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntity);
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        workoutPlanEntity.IsActive.Should().BeFalse();
+
+        var updateWorkoutPlanActiveOrInactiveDto = UpdateWorkoutPlanActiveOrInactiveDto.Create(workoutPlanEntity.Id,
+            true);
+
+        // Act
+        var result = await _workoutPlanService.ToggleWorkoutPlanActiveAsync
+            (updateWorkoutPlanActiveOrInactiveDto);
+
+
+        // Assert
+        result.Success.Should().BeTrue();
+        result.Data.Should().BeTrue();
+
+        var workoutPlanViewModel = await _workoutPlanService.GetWorkoutPlanByIdAsync(workoutPlanEntity.Id)
+            .ContinueWith(x => x.Result.Data!);
+
+        workoutPlanViewModel.IsActive.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task
+        UpdateWorkoutPlanIsActiveProperty_WhenTheInputIsTheSameAsTheExistingProperty_ShouldReturnErrorMessage()
+    {
+        // Arrange
+        var userEntity = AddUserDto.Create("Test", 25, Genre.Male).ToDomainEntity();
+
+        var workoutEntity = new Faker<AddWorkoutDto>()
+            .CustomInstantiator(w => new AddWorkoutDto(
+                Title: w.Random.String(),
+                Description: w.Random.String(),
+                Type: w.PickRandom<WorkoutType>(),
+                BodyPart: w.Random.String(),
+                Equipment: w.Random.String(),
+                Level: w.PickRandom<WorkoutLevel>()))
+            .Generate()
+            .ToDomainEntity();
+
+        await Task.WhenAll(
+            _fitSyncUnitOfWork.UserRepository.AddAsync(userEntity),
+            _fitSyncUnitOfWork.WorkoutRepository.AddAsync(workoutEntity)
+        );
+
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        var workoutPlanEntity = AddWorkoutPlanDto.Create(userEntity.Id, Faker.Random.String(),
+            new Dictionary<int, ExerciseSet>()
+            {
+                { workoutEntity.Id, new ExerciseSet(3, 10, 15, 60,
+                    Faker.Random.Int(),Faker.Random.String() ) }
+            }).ToDomainEntity();
+
+        await _fitSyncUnitOfWork.WorkoutPlanRepository.AddAsync(workoutPlanEntity);
+        await _fitSyncUnitOfWork.SaveChangesAsync();
+
+        workoutPlanEntity.IsActive.Should().BeFalse();
+
+        var updateWorkoutPlanActiveOrInactiveDto = UpdateWorkoutPlanActiveOrInactiveDto.Create(workoutPlanEntity.Id,
+            false);
+
+        // Act
+        var result = await _workoutPlanService.ToggleWorkoutPlanActiveAsync
+            (updateWorkoutPlanActiveOrInactiveDto);
+
+        // Assert
+        result.Success.Should().BeFalse();
+        result.Data.Should().BeFalse();
+        result.ErrorMessage.Should().Be("Can not update workout plan status");
+    }
 }

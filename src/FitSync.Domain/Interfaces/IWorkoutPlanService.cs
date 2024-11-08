@@ -8,6 +8,9 @@ public interface IWorkoutPlanService
 {
     Task<ServiceResponse<int>> CreateWorkPlanAsync(AddWorkoutPlanDto addWorkoutPlanDto);
     Task<ServiceResponse<bool>> UpdateWorkPlanAsync(UpdateWorkoutPlanDto updateWorkoutPlanDto);
+
+    Task<ServiceResponse<bool>> ToggleWorkoutPlanActiveAsync(UpdateWorkoutPlanActiveOrInactiveDto
+        updateWorkoutPlanActiveOrInactiveDto);
     Task<ServiceResponse<bool>> DeleteWorkPlanAsync(int id);
     Task<ServiceResponse<WorkoutPlanViewModel>> GetWorkoutPlanByIdAsync(int id);
     Task<ServiceResponse<IEnumerable<WorkoutPlanViewModel>>> GetWorkoutPlansByUserIdAsync(int userId);

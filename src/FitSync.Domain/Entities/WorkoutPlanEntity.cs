@@ -6,6 +6,7 @@ public class WorkoutPlanEntity : TrackableEntity
 
     // Foreign key
     public int UserId { get; set; }
+    public bool IsActive { get; private set; } = false;
 
     // Navigation property
     public virtual UserEntity User { get; set; }
@@ -16,5 +17,10 @@ public class WorkoutPlanEntity : TrackableEntity
     public void Update(string name)
     {
         Name = name;
+    }
+
+    public void ToggleIsActive(bool isActive)
+    {
+        IsActive = isActive;
     }
 }
