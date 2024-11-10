@@ -14,6 +14,7 @@ public class FitSyncDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<WorkoutPlanEntity> WorkoutPlans { get; set; }
     public DbSet<WorkoutPlanWorkoutEntity> WorkoutPlanWorkouts { get; set; }
+    public DbSet<UserPreferencesEntity> UserPreferences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -23,6 +24,7 @@ public class FitSyncDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<UserEntity>());
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<WorkoutPlanEntity>());
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<WorkoutPlanWorkoutEntity>());
+        modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<UserPreferencesEntity>());
 
         modelBuilder.Entity<WorkoutEntity>()
             .ToTable("Workouts")
@@ -72,6 +74,26 @@ public class FitSyncDbContext : DbContext
             .Property(x => x.Age)
             .HasColumnType("int");
 
+        modelBuilder.Entity<UserPreferencesEntity>()
+            .ToTable("UserPreferences")
+            .HasKey(x => x.Id);
+
+        modelBuilder.Entity<UserPreferencesEntity>()
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<UserPreferencesEntity>()
+            .Property(x => x.PreferredWeightUnit)
+            .HasColumnType("varchar(5)");
+
+        modelBuilder.Entity<UserPreferencesEntity>()
+            .Property(x => x.PreferredDistanceUnit)
+            .HasColumnType("varchar(5)");
+
+        modelBuilder.Entity<UserPreferencesEntity>()
+            .HasOne(x => x.User)
+            .WithOne(x => x.UserPreferences)
+            .HasForeignKey<UserPreferencesEntity>(x => x.UserId);
 
         modelBuilder.Entity<WorkoutPlanEntity>()
             .ToTable("WorkoutPlans")

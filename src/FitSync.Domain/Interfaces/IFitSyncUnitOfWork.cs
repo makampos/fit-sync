@@ -7,4 +7,6 @@ public interface IFitSyncUnitOfWork : IUnitOfWork
     IWorkoutPlanRepository WorkoutPlanRepository { get; init; }
 
     IWorkoutPlanWorkoutRepository WorkoutPlanWorkoutRepository { get; init; }
+
+    IUserPreferencesRepository UserPreferencesRepository { get; init; }
 }

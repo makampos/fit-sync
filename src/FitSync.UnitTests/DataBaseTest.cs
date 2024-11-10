@@ -18,6 +18,7 @@ public abstract class DataBaseTest<T> : IDisposable, IAsyncDisposable where T : 
     private readonly IUserRepository _userRepository;
     private readonly IWorkoutPlanRepository _workoutPlanRepository;
     private readonly IWorkoutPlanWorkoutRepository _workoutPlanWorkoutRepository;
+    private readonly IUserPreferencesRepository _userPreferencesRepository;
 
     protected DataBaseTest()
     {
@@ -33,13 +34,15 @@ public abstract class DataBaseTest<T> : IDisposable, IAsyncDisposable where T : 
         _userRepository = new UserRepository(_fitSyncDbContext);
         _workoutPlanRepository = new WorkoutPlanRepository(_fitSyncDbContext);
         _workoutPlanWorkoutRepository = new WorkoutPlanWorkoutRepository(_fitSyncDbContext);
+        _userPreferencesRepository = new UserPreferencesRepository(_fitSyncDbContext);
 
         _fitSyncUnitOfWork = new FitSyncUnitOfWork(
             _fitSyncDbContext,
             _workoutRepository,
             _userRepository,
             _workoutPlanRepository,
-            _workoutPlanWorkoutRepository);
+            _workoutPlanWorkoutRepository,
+            _userPreferencesRepository);
     }
 
     protected TInstance CreateInstance<TInstance>()
