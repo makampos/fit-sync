@@ -24,6 +24,7 @@ public class FitSyncDbContext : DbContext
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<UserEntity>());
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<WorkoutPlanEntity>());
         modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<WorkoutPlanWorkoutEntity>());
+        modelBuilder.ApplyConfiguration(new TrackableEntityConfiguration<UserPreferencesEntity>());
 
         modelBuilder.Entity<WorkoutEntity>()
             .ToTable("Workouts")

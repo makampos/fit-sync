@@ -50,9 +50,10 @@ public class UserPreferencesServiceTests : DataBaseTest<UserPreferencesService>
             Faker.PickRandom<WeightUnit>(),
             Faker.PickRandom<DistanceUnit>());
 
-        await _userPreferencesService.CreateUserPreferencesAsync(addUserPreferencesDto);
+        var id = await _userPreferencesService.CreateUserPreferencesAsync(addUserPreferencesDto)
+            .ContinueWith(x => x.Result.Data);
 
-        var result = await _userPreferencesService.GetUserPreferencesAsync(userEntity.Id);
+        var result = await _userPreferencesService.GetUserPreferencesAsync(id);
 
         result.Should().NotBeNull();
         result.Data.Should().NotBeNull();
@@ -73,9 +74,10 @@ public class UserPreferencesServiceTests : DataBaseTest<UserPreferencesService>
             Faker.PickRandom<WeightUnit>(),
             Faker.PickRandom<DistanceUnit>());
 
-        await _userPreferencesService.CreateUserPreferencesAsync(addUserPreferencesDto);
+        var id = await _userPreferencesService.CreateUserPreferencesAsync(addUserPreferencesDto)
+            .ContinueWith(x => x.Result.Data);
 
-        var updateUserPreferencesDto = UpdateUserPreferencesDto.Create(userEntity.Id,
+        var updateUserPreferencesDto = UpdateUserPreferencesDto.Create(id,
             addUserPreferencesDto.PreferredWeightUnit,
             addUserPreferencesDto.PreferredDistanceUnit);
 

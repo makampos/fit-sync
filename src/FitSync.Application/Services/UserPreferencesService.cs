@@ -53,12 +53,12 @@ public class UserPreferencesService : IUserPreferencesService
         _logger.LogInformation("Updating user preferences for user with id: {UserId}", "!claims!");
 
         var userPreferencesEntity = await _fitSyncUnitOfWork.UserPreferencesRepository.GetByIdAsync(
-            updateUserPreferencesDto.UserPreferencesId, CancellationToken.None);
+            updateUserPreferencesDto.Id, CancellationToken.None);
 
         if (userPreferencesEntity is null)
         {
             _logger.LogWarning("User preferences not found with id: {UserPreferencesId}",
-                updateUserPreferencesDto.UserPreferencesId);
+                updateUserPreferencesDto.Id);
             return ServiceResponse<bool>.FailureResult("User preferences not found");
         }
 
