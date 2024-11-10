@@ -7,11 +7,12 @@ public class FitSyncUnitOfWork(
     IWorkoutRepository workoutRepository,
     IUserRepository userRepository,
     IWorkoutPlanRepository workoutPlanRepository,
-    IWorkoutPlanWorkoutRepository workoutPlanWorkoutRepository) : UnitOfWork(fitSyncDbContext), IFitSyncUnitOfWork
+    IWorkoutPlanWorkoutRepository workoutPlanWorkoutRepository,
+    IUserPreferencesRepository userPreferencesRepository) : UnitOfWork(fitSyncDbContext), IFitSyncUnitOfWork
 {
     public IWorkoutRepository WorkoutRepository { get; init; } = workoutRepository;
     public IUserRepository UserRepository { get; init; } = userRepository;
     public IWorkoutPlanRepository WorkoutPlanRepository { get; init; } = workoutPlanRepository;
     public IWorkoutPlanWorkoutRepository WorkoutPlanWorkoutRepository { get; init; } = workoutPlanWorkoutRepository;
-
+    public IUserPreferencesRepository UserPreferencesRepository { get; init; } = userPreferencesRepository;
 }

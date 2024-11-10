@@ -69,6 +69,55 @@ namespace FitSync.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("FitSync.Domain.Entities.UserPreferencesEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PreferredDistanceUnit")
+                        .HasColumnType("varchar(5)");
+
+                    b.Property<string>("PreferredWeightUnit")
+                        .HasColumnType("varchar(5)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserPreferences", (string)null);
+                });
+
             modelBuilder.Entity("FitSync.Domain.Entities.WorkoutEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -239,6 +288,17 @@ namespace FitSync.Infrastructure.Migrations
                     b.ToTable("WorkoutPlanWorkouts", (string)null);
                 });
 
+            modelBuilder.Entity("FitSync.Domain.Entities.UserPreferencesEntity", b =>
+                {
+                    b.HasOne("FitSync.Domain.Entities.UserEntity", "User")
+                        .WithOne("UserPreferences")
+                        .HasForeignKey("FitSync.Domain.Entities.UserPreferencesEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FitSync.Domain.Entities.WorkoutPlanEntity", b =>
                 {
                     b.HasOne("FitSync.Domain.Entities.UserEntity", "User")
@@ -271,6 +331,9 @@ namespace FitSync.Infrastructure.Migrations
 
             modelBuilder.Entity("FitSync.Domain.Entities.UserEntity", b =>
                 {
+                    b.Navigation("UserPreferences")
+                        .IsRequired();
+
                     b.Navigation("WorkoutPlans");
                 });
 

@@ -1,4 +1,5 @@
 using FitSync.Domain.Dtos.Users;
+using FitSync.Domain.Dtos.Users.Preferences;
 using FitSync.Domain.Dtos.WorkoutPlans;
 using FitSync.Domain.Dtos.Workouts;
 using FitSync.Domain.Entities;
@@ -74,6 +75,19 @@ public static class Map
             userEntity.Genre,
             userEntity.WorkoutPlans
                 .Select(w => w.ToViewModel()).ToList());
+    }
+
+    public static UserPreferencesViewModel ToViewModel(this UserPreferencesEntity userPreferencesEntity)
+    {
+        return UserPreferencesViewModel.Create(
+            userPreferencesEntity.PreferredWeightUnit,
+            userPreferencesEntity.PreferredDistanceUnit);
+    }
+
+    public static UserPreferencesEntity ToDomainEntity(this AddUserPreferencesDto addUserPreferencesDto)
+    {
+        return UserPreferencesEntity.Create(addUserPreferencesDto.UserId, addUserPreferencesDto.PreferredWeightUnit,
+            addUserPreferencesDto.PreferredDistanceUnit);
     }
 
     public static WorkoutWithExercisesSetViewModel ToViewModel(this WorkoutEntity workoutEntity, ExerciseSet? exerciseSet = null)

@@ -28,6 +28,7 @@ public static class Dependencies
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
         services.AddScoped<ICalendarService, CalendarService>();
+        services.AddScoped<IUserPreferencesService, UserPreferencesService>();
 
         return services;
     }
@@ -47,6 +48,7 @@ public static class Dependencies
         services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
         services.AddScoped(typeof(IWorkoutPlanRepository), typeof(WorkoutPlanRepository));
         services.AddScoped(typeof(IWorkoutPlanWorkoutRepository), typeof(WorkoutPlanWorkoutRepository));
+        services.AddScoped(typeof(IUserPreferencesRepository), typeof(UserPreferencesRepository));
 
         return services;
     }

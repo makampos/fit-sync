@@ -17,6 +17,7 @@ public class UserEntity : TrackableEntity
     public Genre Genre { get; private set; }
 
     public virtual ICollection<WorkoutPlanEntity> WorkoutPlans { get; set; } = new List<WorkoutPlanEntity>();
+    public virtual UserPreferencesEntity UserPreferences { get; set; }
 
     public static UserEntity Create(string name, int age, Genre genre)
     {
