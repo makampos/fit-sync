@@ -17,6 +17,7 @@ if (app.Environment.IsDevelopment())
 
 Dependencies.MigrateDatabase(app.Services);
 app.UseHttpsRedirection();
+app.UseCors();
 app.MapControllers();
 app.Run();
 
