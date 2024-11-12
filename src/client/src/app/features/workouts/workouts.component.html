@@ -1,0 +1,50 @@
+<div>
+  <h2>Manage Workouts</h2>
+
+  <form [formGroup]="workoutForm" (ngSubmit)="onSubmit()">
+    <input formControlName="title" placeholder="Title" required />
+    <textarea formControlName="description" placeholder="Description" required></textarea>
+
+    <!-- Add more fields as necessary -->
+
+    <button type="submit">{{ editMode ? 'Update' : 'Create' }}</button>
+    <button type="button" (click)="resetForm()">Cancel</button>
+  </form>
+
+  <ul>
+    <li *ngFor="let workout of workouts">
+      <div>
+        Title: {{ workout.title }}
+      </div>
+
+      <div>
+       Description: {{ workout.description }}
+      </div>
+
+      <div>
+        Tye: {{ workout.type }}
+      </div>
+
+      <div>
+        Body Part: {{ workout.bodyPart }}
+      </div>
+
+      <div>
+        Equipment: {{ workout.equipment }}
+      </div>
+
+    <div>
+      Level: {{ workout.level }}
+    </div>
+      <button (click)="onEdit(workout.workoutId)">Edit</button>
+      <button (click)="onDelete(workout.workoutId)">Delete</button>
+    </li>
+  </ul>
+
+  <!-- Pagination Controls -->
+  <div class="pagination">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalCount / pageSize | ceil }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalCount / pageSize">Next</button>
+  </div>
+</div>
