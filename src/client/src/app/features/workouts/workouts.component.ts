@@ -5,13 +5,27 @@ import {WorkoutService} from '../../core/services/workout.service';
 import {NgForOf} from '@angular/common';
 import {CeilPipe} from '../../shared/pipes/ceil.pipe';
 
+
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import {FloatLabelModule} from 'primeng/floatlabel';
+import { FocusTrapModule } from 'primeng/focustrap';
+import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
+
 @Component({
   selector: 'app-workouts',
   standalone: true,
   imports: [
+    ButtonModule,
+    InputTextModule,
+    FocusTrapModule,
     ReactiveFormsModule,
+    TableModule,
+    CardModule,
     NgForOf,
     CeilPipe,
+    FloatLabelModule,
   ],
   templateUrl: './workouts.component.html',
   styleUrl: './workouts.component.css'
