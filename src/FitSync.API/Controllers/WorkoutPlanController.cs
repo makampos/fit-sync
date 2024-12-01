@@ -7,6 +7,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+/// <summary>
+/// Controllers for workout plans related operations
+/// </summary>
 [ApiController]
 [Route("api/workout-plans")]
 public class WorkoutPlanController : ControllerBase
@@ -20,6 +23,12 @@ public class WorkoutPlanController : ControllerBase
         _workoutPlanService = workoutPlanService;
     }
 
+    /// <summary>
+    ///  Get all workout plans
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="isActive"></param>
+    /// <returns></returns>
     [HttpGet("users/{userId:int}")]
     [SwaggerOperation("Get Workout Plan by User Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
@@ -36,6 +45,11 @@ public class WorkoutPlanController : ControllerBase
             : NotFound();
     }
 
+    /// <summary>
+    ///   Get workout plan by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id:int}", Name = nameof(GetWorkoutPlanByIdAsync))]
     [SwaggerOperation("Get Workout Plan by Id")]
     [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanViewModel))]
@@ -50,6 +64,11 @@ public class WorkoutPlanController : ControllerBase
             : NotFound();
     }
 
+    /// <summary>
+    /// Create new workout plan
+    /// </summary>
+    /// <param name="addWorkoutPlanDto"></param>
+    /// <returns></returns>
     [HttpPost]
     [SwaggerResponse(StatusCodes.Status201Created, "Workout plan created", typeof(int))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
@@ -66,6 +85,11 @@ public class WorkoutPlanController : ControllerBase
             : BadRequest(serviceResponse.ErrorMessage);
     }
 
+    /// <summary>
+    ///  Update workout plan
+    /// </summary>
+    /// <param name="updateWorkoutPlanDto"></param>
+    /// <returns></returns>
     [HttpPut]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
@@ -85,6 +109,12 @@ public class WorkoutPlanController : ControllerBase
             };
     }
 
+    /// <summary>
+    ///  Update workout plan status
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="isActive"></param>
+    /// <returns></returns>
     [HttpPatch("{id:int}/toggle-active")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
@@ -108,7 +138,11 @@ public class WorkoutPlanController : ControllerBase
             };
     }
 
-
+    /// <summary>
+    ///  Delete workout plan
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete("{id:int}")]
     [SwaggerOperation("Delete Workout Plan")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan deleted")]

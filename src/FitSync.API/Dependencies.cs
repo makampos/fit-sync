@@ -1,3 +1,4 @@
+using System.Reflection;
 using FitSync.Application.Services;
 using FitSync.Domain.Interfaces;
 using FitSync.Infrastructure.Data;
@@ -73,9 +74,11 @@ public static class Dependencies
 
     private static IServiceCollection AddSwagger(this IServiceCollection services)
      {
-
          services.AddSwaggerGen(c =>
          {
+             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
              c.SwaggerDoc("v1", new OpenApiInfo
              {
                  Title = "FitSync Swagger",
