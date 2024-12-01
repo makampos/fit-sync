@@ -63,7 +63,7 @@ public static class Dependencies
         try
         {
             var context = services.GetRequiredService<FitSyncDbContext>();
-            context.Database.Migrate();
+            context.Database.EnsureCreated();
         }
         catch (Exception ex)
         {
@@ -89,6 +89,8 @@ public static class Dependencies
                      Url = new Uri("https://fitsync.io")
                  }
              });
+
+             c.EnableAnnotations();
          });
 
          return services;

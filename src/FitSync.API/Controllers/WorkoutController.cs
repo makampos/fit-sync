@@ -9,8 +9,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+
 [ApiController]
 [Route("/api/workouts")]
+[SwaggerTag("Endpoints for workout related operations")]
 public class WorkoutController : ControllerBase
 {
     private readonly IWorkoutService _workoutService;
@@ -23,10 +25,10 @@ public class WorkoutController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("{id}", Name = nameof(GetByIdAsync))]
-    [SwaggerOperation("Get Workout by Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout found", typeof(WorkoutViewModel))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout not found")]
+    [HttpGet("{id:int}", Name = nameof(GetByIdAsync))]
+    [SwaggerOperation("Get resource by id")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(WorkoutViewModel))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(GetByIdAsync));
@@ -38,8 +40,8 @@ public class WorkoutController : ControllerBase
     }
 
     [HttpGet]
-    [SwaggerOperation("Get All Workouts")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workouts", typeof(PagedResult<WorkoutViewModel>))]
+    [SwaggerOperation("Get all resources")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(PagedResult<WorkoutViewModel>))]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] WorkoutType? type = null,
         [FromQuery] string? bodyPart = null,
@@ -57,9 +59,9 @@ public class WorkoutController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerOperation("Create Workout")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Workout created", typeof(int))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid Input")]
+    [SwaggerOperation("Create Resource")]
+    [SwaggerResponse(StatusCodes.Status201Created, "A new resource is created", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> CreateAsync(AddWorkoutDto addWorkoutDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(CreateAsync));
@@ -71,9 +73,9 @@ public class WorkoutController : ControllerBase
     }
 
     [HttpPut]
-    [SwaggerOperation("Update Workout")]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout updated")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid Input")]
+    [SwaggerOperation("Update Resource")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> UpdateAsync(UpdateWorkoutDto updateWorkoutDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(UpdateAsync));
@@ -88,10 +90,11 @@ public class WorkoutController : ControllerBase
             };
     }
 
-    [HttpDelete("{id}")]
-    [SwaggerOperation("Delete Workout")]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout deleted")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout not found")]
+
+    [HttpDelete("{id:int}")]
+    [SwaggerOperation("Delete Resource")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is deleted")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(WorkoutController), nameof(DeleteAsync));

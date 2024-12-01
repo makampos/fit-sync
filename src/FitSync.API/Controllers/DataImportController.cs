@@ -4,6 +4,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+[SwaggerTag("Endpoints for data import related operations")]
 [ApiController]
 [Route("/api/dataimports")]
 public class DataImportController : ControllerBase
@@ -16,7 +17,7 @@ public class DataImportController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerOperation("Import Data from CSV File")]
+    [SwaggerOperation("Import Workouts data from CSV file")]
     [SwaggerResponse(StatusCodes.Status201Created)]
     public async Task<IActionResult> ImportData(IFormFile file)
     {
