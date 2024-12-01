@@ -7,8 +7,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+
 [ApiController]
 [Route("api/calendar")]
+[SwaggerTag("Endpoints for calendar related operations")]
 public class CalendarController : ControllerBase
 {
     private readonly ILogger<CalendarController> _logger;
@@ -21,7 +23,8 @@ public class CalendarController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerResponse(StatusCodes.Status200OK, "Event added to calendar", typeof(FileContentHttpResult))]
+    [SwaggerOperation("Export .ICS file")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Add workout plans to calendar events and returned a .ICS file", typeof(FileContentHttpResult))]
     public async Task<IActionResult> AddEventAsync(
         [FromBody] AddWorkoutPlanCalendarEventDto addWorkoutPlanCalendarEventsDto)
     {

@@ -5,8 +5,10 @@ using FitSync.Domain.ViewModels.Users;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
+
 namespace FitSync.API.Controllers;
 
+[SwaggerTag("Endpoints for user preferences related operations")]
 [ApiController]
 [Route("api/user-preferences")]
 public class UserPreferencesController : ControllerBase
@@ -21,8 +23,9 @@ public class UserPreferencesController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = nameof(GetUserPreferencesByIdAsync))]
-    [SwaggerResponse(StatusCodes.Status200OK, "User preferences found", typeof(UserPreferencesViewModel))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User preferences not found")]
+    [SwaggerOperation("Get user preferences by id")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(UserPreferencesViewModel))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "the resource is not found")]
     public async Task<IActionResult> GetUserPreferencesByIdAsync([FromRoute] int id)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserPreferencesController), nameof(GetUserPreferencesByIdAsync));
@@ -33,9 +36,10 @@ public class UserPreferencesController : ControllerBase
             : NotFound(serviceResponse.ErrorMessage);
     }
 
+
     [HttpPost(Name = nameof(CreateUserPreferencesAsync))]
-    [SwaggerResponse(StatusCodes.Status201Created, "User preferences created", typeof(int))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "User preferences data is invalid")]
+    [SwaggerResponse(StatusCodes.Status201Created, "A new resource is created", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> CreateUserPreferencesAsync([FromBody] AddUserPreferencesDto addUserPreferencesDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserPreferencesController), nameof(CreateUserPreferencesAsync));
@@ -48,11 +52,12 @@ public class UserPreferencesController : ControllerBase
             : BadRequest(serviceResponse.ErrorMessage);
     }
 
+
     [HttpPut("{id:int}", Name = nameof(UpdateUserPreferencesAsync))]
-    [SwaggerOperation("Update User Preferences")]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "User Preferences Updated")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User Preferences Not Found")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid Input")]
+    [SwaggerOperation("Update resource preferences by id")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is updated")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> UpdateUserPreferencesAsync(
         [FromRoute] int id,
         [FromBody] UpdateUserPreferencesDto updateUserPreferencesDto)

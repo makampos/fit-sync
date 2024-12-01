@@ -7,8 +7,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+
 [ApiController]
 [Route("api/users")]
+[SwaggerTag("Endpoints for user related operations")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> _logger;
@@ -20,9 +22,10 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("{id}",Name = nameof(GetUserByIdAsync))]
-    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserViewModel))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
+    [HttpGet("{id:int}",Name = nameof(GetUserByIdAsync))]
+    [SwaggerOperation("Get resource by id")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(UserViewModel))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserController),
@@ -34,9 +37,11 @@ public class UserController : ControllerBase
             : NotFound(serviceResponse.ErrorMessage);
     }
 
-    [HttpGet("{id}/included", Name = nameof(GetUserByIdIncludeAllAsync))]
-    [SwaggerResponse(StatusCodes.Status200OK, "User found", typeof(UserViewModelIncluded))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "User not found")]
+
+    [HttpGet("{id:int}/included", Name = nameof(GetUserByIdIncludeAllAsync))]
+    [SwaggerOperation("Get resource by id including all related resources")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(UserViewModelIncluded))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> GetUserByIdIncludeAllAsync(int id)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(GetUserByIdIncludeAllAsync));
@@ -47,9 +52,11 @@ public class UserController : ControllerBase
             : NotFound(serviceResponse.ErrorMessage);
     }
 
+
     [HttpPost]
-    [SwaggerResponse(StatusCodes.Status201Created, "User created", typeof(int))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "User data is invalid")]
+    [SwaggerOperation("Create a new resource")]
+    [SwaggerResponse(StatusCodes.Status201Created, "The resource is created", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> CreateUserAsync([FromBody] AddUserDto addUserDto)
     {
         _logger.LogInformation("{controller} called within {action}", nameof(UserController), nameof(CreateUserAsync));

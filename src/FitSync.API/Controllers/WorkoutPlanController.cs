@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace FitSync.API.Controllers;
 
+[SwaggerTag("Endpoints for workout plan related operations")]
 [ApiController]
 [Route("api/workout-plans")]
 public class WorkoutPlanController : ControllerBase
@@ -21,9 +22,9 @@ public class WorkoutPlanController : ControllerBase
     }
 
     [HttpGet("users/{userId:int}")]
-    [SwaggerOperation("Get Workout Plan by User Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(IEnumerable<WorkoutPlanViewModel>))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    [SwaggerOperation("Get resource by user id and flag")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(IEnumerable<WorkoutPlanViewModel>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> GetWorkoutPlansByUserIdAsync([FromRoute] int userId, [FromQuery] bool isActive =
         false)
     {
@@ -36,10 +37,11 @@ public class WorkoutPlanController : ControllerBase
             : NotFound();
     }
 
+
     [HttpGet("{id:int}", Name = nameof(GetWorkoutPlanByIdAsync))]
-    [SwaggerOperation("Get Workout Plan by Id")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Workout plan found", typeof(WorkoutPlanViewModel))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    [SwaggerOperation("Get resource by id")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The resource is returned", typeof(WorkoutPlanViewModel))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> GetWorkoutPlanByIdAsync([FromRoute] int id)
     {
         _logger.LogInformation("Getting workout plan by id: {id}", id);
@@ -51,8 +53,9 @@ public class WorkoutPlanController : ControllerBase
     }
 
     [HttpPost]
-    [SwaggerResponse(StatusCodes.Status201Created, "Workout plan created", typeof(int))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
+    [SwaggerOperation("Create a new resource")]
+    [SwaggerResponse(StatusCodes.Status201Created, "A new resource is created", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
     public async Task<IActionResult> CreateWorkoutPlanAsync([FromBody] AddWorkoutPlanDto addWorkoutPlanDto)
     {
         _logger.LogInformation("Creating new workout plan");
@@ -67,9 +70,10 @@ public class WorkoutPlanController : ControllerBase
     }
 
     [HttpPut]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    [SwaggerOperation("Update resource")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> UpdateWorkoutPlanAsync([FromBody] UpdateWorkoutPlanDto updateWorkoutPlanDto)
     {
         _logger.LogInformation("Updating workout plan");
@@ -86,9 +90,10 @@ public class WorkoutPlanController : ControllerBase
     }
 
     [HttpPatch("{id:int}/toggle-active")]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan updated")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid workout plan data")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    [SwaggerOperation("Toggle resource flag")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is updated")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error is returned")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> ToggleWorkoutPlanActiveAsync([FromRoute] int id, [FromBody] bool
         isActive)
     {
@@ -110,9 +115,9 @@ public class WorkoutPlanController : ControllerBase
 
 
     [HttpDelete("{id:int}")]
-    [SwaggerOperation("Delete Workout Plan")]
-    [SwaggerResponse(StatusCodes.Status204NoContent, "Workout plan deleted")]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Workout plan not found")]
+    [SwaggerOperation("Delete resource")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The resource is deleted")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "The resource is not found")]
     public async Task<IActionResult> DeleteWorkoutPlanAsync([FromRoute] int id)
     {
         _logger.LogInformation("Deleting workout plan by id: {id}", id);

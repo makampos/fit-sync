@@ -21,5 +21,10 @@
       <ProjectReference Include="..\FitSync.Domain\FitSync.Domain.csproj" />
       <ProjectReference Include="..\FitSync.Infrastructure\FitSync.Infrastructure.csproj" />
     </ItemGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\Debug\net8.0\FitSync.API.xml</DocumentationFile>
+    </PropertyGroup>
     
 </Project>
