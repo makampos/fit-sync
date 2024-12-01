@@ -17,6 +17,7 @@ public static class Dependencies
         services.AddInfrastructure(configuration);
         services.AddRepositories();
         services.AddSwagger();
+        services.AddCors();
 
         return services;
     }
@@ -95,4 +96,19 @@ public static class Dependencies
 
          return services;
      }
+
+    private static IServiceCollection AddCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
+        return services;
+    }
 }
